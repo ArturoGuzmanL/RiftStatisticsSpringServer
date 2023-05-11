@@ -69,7 +69,7 @@
         </div>
         <div id="interactiveSidebar">
             <div class="sidebar-user" id="show-login">
-                <img id="profileImage" src="${UsernamePhoto}" alt="AccountName" class="user-img pointerCursor">
+                <img id="profileImage" src="${UsernamePhoto}" alt="AccountName" class="user-img">
                 <div>
                     <p class="bold">${Username}</p>
                 </div>

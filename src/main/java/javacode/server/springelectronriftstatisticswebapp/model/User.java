@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name = "users")
+@Table(name="users", schema = "public")
 @EntityListeners(AuditingEntityListener.class)
 
 public class User implements Serializable {
@@ -56,8 +56,7 @@ public class User implements Serializable {
     private LocalDate create_Date = null;
     @Column(name = "vinculatedlol")
     private String vinculatedlol = null;
-    @Lob
-    @Column(name = "accountimage", length = -1, nullable = true, columnDefinition = "mediumblob")
+    @Column(name = "accountimage", length = -1, nullable = true)
     private byte[] accountimage;
 
     // getters y setters
