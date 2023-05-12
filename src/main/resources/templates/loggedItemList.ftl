@@ -73,7 +73,6 @@
                 <div>
                     <p class="bold">${Username}</p>
                 </div>
-                <input id="file-input" type="file" onchange="previewFile(this);" accept=".jpg, .jpeg, .png" style="display: none;" />
             </div>
             <ul>
                 <li>

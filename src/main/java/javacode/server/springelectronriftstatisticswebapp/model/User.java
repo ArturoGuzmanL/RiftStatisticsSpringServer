@@ -22,13 +22,14 @@ import java.time.LocalDate;
 @EntityListeners(AuditingEntityListener.class)
 
 public class User implements Serializable {
-    public User (String ID, String username, String email, String password, LocalDate create_Date, String vinculatedlol, byte[] accountimage) {
+    public User (String ID, String username, String email, String password, LocalDate create_Date, String vinculatedlol, String lolregion, byte[] accountimage) {
         this.id = ID;
         this.username = username;
         this.email = email;
         this.password = password;
         this.create_Date = create_Date;
         this.vinculatedlol = vinculatedlol;
+        this.lolregion = lolregion;
         this.accountimage = accountimage;
     }
 
@@ -56,6 +57,8 @@ public class User implements Serializable {
     private LocalDate create_Date = null;
     @Column(name = "vinculatedlol")
     private String vinculatedlol = null;
+    @Column(name = "lolregion")
+    private String lolregion = null;
     @Column(name = "accountimage", length = -1, nullable = true)
     private byte[] accountimage;
 
@@ -109,6 +112,14 @@ public class User implements Serializable {
         this.vinculatedlol = vinculatedlol;
     }
 
+    public String getLolregion () {
+        return lolregion;
+    }
+
+    public void setLolregion (String lolregion) {
+        this.lolregion = lolregion;
+    }
+
     public byte[] getAccountimage () {
         return accountimage;
     }
@@ -118,7 +129,7 @@ public class User implements Serializable {
     }
 
     public boolean noneNull() {
-        return id != null && username != null && password != null && email != null && create_Date != null && vinculatedlol != null && accountimage != null;
+        return id != null && username != null && password != null && email != null && create_Date != null && vinculatedlol != null && accountimage != null && lolregion != null;
     }
 
     @Override
@@ -128,6 +139,7 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", create_Date='" + create_Date + '\'' +
                 ", vinculatedLoL='" + vinculatedlol + '\'' +
+                ", LoLRegion='" + lolregion + '\'' +
                 ", AccountImage='" + accountimage + '\'' +
                 '}';
     }

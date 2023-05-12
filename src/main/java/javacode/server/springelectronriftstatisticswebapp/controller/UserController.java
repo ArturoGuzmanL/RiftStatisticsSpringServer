@@ -70,6 +70,13 @@ public class UserController {
 //    public List<User> list() {
 //    }
 
+    // ------------- Ping  ------------- //
+
+    @GetMapping(" ping")
+    public ResponseEntity<String> ping() {
+        return new ResponseEntity<>("pong", HttpStatus.OK);
+    }
+
     // ------------- Account actions  ------------- //
 
     @GetMapping("users/actions/login/{username}={password}")
@@ -118,6 +125,18 @@ public class UserController {
             user.get().setAccountimage(profileImg);
             userRepository.save(user.get());
             return new ResponseEntity<>(user.get().getId(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("linkAccount/{uid}/{lol}")
+    public ResponseEntity<Boolean> linkLoLAccount(@PathVariable("uid") String uid, @PathVariable("lol") String lol) {
+        Optional<User> user = userRepository.findById(uid);
+        if (true) {
+            user.get().setVinculatedlol(lol);
+            userRepository.save(user.get());
+            return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -178,7 +197,7 @@ public class UserController {
         if (Boolean.parseBoolean(logged)) {
             Optional<User> user = userRepository.findById(uid);
             if (user.isPresent()) {
-                String html = htmlFactory.summonerPage(true, PUUID, region, user.get());
+                String html = htmlFactory.summonerPage(true, PUUID, region, userRepository, user.get());
                 if (html == null) {
                     return new ResponseEntity<>(HttpStatus.CONFLICT);
                 }else {
@@ -188,7 +207,7 @@ public class UserController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }else {
-            String html = htmlFactory.summonerPage(false, PUUID, region);
+            String html = htmlFactory.summonerPage(false, PUUID, region, userRepository);
             if (html == null) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }else {
