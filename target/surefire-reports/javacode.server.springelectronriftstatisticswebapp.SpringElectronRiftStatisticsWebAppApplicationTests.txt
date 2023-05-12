@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: javacode.server.springelectronriftstatisticswebapp.SpringElectronRiftStatisticsWebAppApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.16 s - in javacode.server.springelectronriftstatisticswebapp.SpringElectronRiftStatisticsWebAppApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.505 s - in javacode.server.springelectronriftstatisticswebapp.SpringElectronRiftStatisticsWebAppApplicationTests

@@ -30,6 +30,7 @@ import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
 import no.stelar7.api.r4j.pojo.lol.staticdata.item.InventoryDataStats;
 import no.stelar7.api.r4j.pojo.lol.staticdata.item.Item;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
