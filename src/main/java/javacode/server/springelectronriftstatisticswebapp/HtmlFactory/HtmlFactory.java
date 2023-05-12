@@ -53,7 +53,7 @@ public class HtmlFactory {
         DataCall.setCacheProvider(fileCache.get());
         cfg = new Configuration(Configuration.VERSION_2_3_31);
 
-        FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File("/templates"));
+        FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File("src/main/java/javacode/server/springelectronriftstatisticswebapp/HtmlFactory/templates"));
         cfg.setTemplateLoader(fileTemplateLoader);
     }
 
