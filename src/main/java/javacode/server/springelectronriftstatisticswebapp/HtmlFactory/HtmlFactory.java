@@ -15,7 +15,6 @@ import javacode.server.springelectronriftstatisticswebapp.model.User;
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
-import no.stelar7.api.r4j.basic.constants.api.regions.RegionShard;
 import no.stelar7.api.r4j.basic.constants.types.lol.GameQueueType;
 import no.stelar7.api.r4j.basic.constants.types.lol.RoleType;
 import no.stelar7.api.r4j.impl.R4J;
@@ -27,13 +26,10 @@ import no.stelar7.api.r4j.pojo.lol.league.LeagueEntry;
 import no.stelar7.api.r4j.pojo.lol.match.v5.LOLMatch;
 import no.stelar7.api.r4j.pojo.lol.match.v5.MatchParticipant;
 import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
-import no.stelar7.api.r4j.pojo.lol.staticdata.item.InventoryDataStats;
 import no.stelar7.api.r4j.pojo.lol.staticdata.item.Item;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -57,7 +53,7 @@ public class HtmlFactory {
         DataCall.setCacheProvider(fileCache.get());
         cfg = new Configuration(Configuration.VERSION_2_3_31);
 
-        FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File(this.getClass().getResource("/templates").getPath()));
+        FileTemplateLoader fileTemplateLoader = new FileTemplateLoader(new File("/templates"));
         cfg.setTemplateLoader(fileTemplateLoader);
     }
 
