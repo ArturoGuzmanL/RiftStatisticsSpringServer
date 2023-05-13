@@ -72,7 +72,7 @@ public class UserController {
 
     // ------------- Ping  ------------- //
 
-    @GetMapping(" ping")
+    @GetMapping("ping")
     public ResponseEntity<String> ping() {
         return new ResponseEntity<>("pong", HttpStatus.OK);
     }
