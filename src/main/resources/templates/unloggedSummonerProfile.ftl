@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>RiftStatistics</title>
-    <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="../css/loader.css">
+    <link rel="stylesheet" href="https://riftstatistics.ddns.net/file/css/style">
+    <link rel="stylesheet" href="https://riftstatistics.ddns.net/file/css/loader">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="../javascriptScripts/jquery-3.6.4.min.js"></script>
+    <script src="https://riftstatistics.ddns.net/file/js/Jquery"></script>
 </head>
 <body>
 
@@ -116,7 +116,7 @@
         <div class="sidebar noselection" id="sidebar">
             <div class="sidebar-top">
                 <div class="sidebar-logo">
-                    <img src="../media/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
+                    <img src="https://riftstatistics.ddns.net/file/assets/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
                 </div>
                 <svg id="sidebar-button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
@@ -180,7 +180,7 @@
                         <div class="levelBorder">
                             <p>${profileLevel}</p>
                         </div>
-                        <img class="noselection" src="../media/summIcon/${profileImageID}.png" alt="${profileImageID}" width="125px">
+                        <img class="noselection" src="https://riftstatistics.ddns.net/file/assets/summIcon/${profileImageID}.png" alt="${profileImageID}" width="125px">
                     </div>
                 </div>
                 <div class="profileInfo" id="${profilePUUID}">
@@ -222,12 +222,12 @@
                         </div>
                         <div class="eloInfoSolo">
                             <div class="eloImage">
-                                <img src="../media/elo/${soloQimage}.png" alt="${soloQimage}" width="120px">
+                                <img src="https://riftstatistics.ddns.net/file/assets/eloIcon/${soloQimage}.png" alt="${soloQimage}" width="120px">
                             </div>
                         </div>
                         <div class="eloInfoFlex">
                             <div class="eloImage">
-                                <img src="../media/elo/${flexQimage}.png" alt="${flexQimage}" width="120px">
+                                <img src="https://riftstatistics.ddns.net/file/assets/eloIcon/${flexQimage}.png" alt="${flexQimage}" width="120px">
                             </div>
                         </div>
                     </div>
@@ -240,7 +240,7 @@
                                 <#list championIndex as champion>
                                     <div class="recentlyPlayedChampion">
                                         <div class="recentlyPlayedChampionImage">
-                                            <img src="../media/champion_squares_rounded/${champion.getID()}.png" alt="${champion.getName()}" width="60px">
+                                            <img src="https://riftstatistics.ddns.net/file/assets/championsqrrond/${champion.getID()}.png" alt="${champion.getName()}" width="60px">
                                         </div>
                                         <div class="recentlyPlayedChampionInfo">
                                             <div class="recentlyPlayedChampionStats">
@@ -257,7 +257,7 @@
                             <#else>
                                 <div class="recentlyPlayedChampion">
                                     <div class="recentlyPlayedChampionImage">
-                                        <img src="../media/champion_squares_rounded/0.png" alt="No Champions" width="60px">
+                                        <img src="https://riftstatistics.ddns.net/file/assets/championsqrrond/0.png" alt="No Champions" width="60px">
                                     </div>
                                     <div class="recentlyPlayedChampionInfo">
                                         <div class="recentlyPlayedChampionStats">
@@ -280,7 +280,7 @@
                                 <#list summonerIndex as summoner>
                                     <div class="recentlyPlayedSummoner" id="${summoner.getPUUID()}">
                                         <div class="recentlyPlayedChampionImage">
-                                            <img src="../media/summIcon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
+                                            <img src="https://riftstatistics.ddns.net/file/assets/summIcon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
                                         </div>
                                         <div id="summoner${summoner.getPUUID()}Region" class="playedWithObject">
                                             <h1 id="${summoner.getRegion()}" class="playedWithName">${summoner.getName()}</h1>
@@ -291,7 +291,7 @@
                             <#else>
                                 <div class="recentlyPlayedSummoner" id="">
                                     <div class="recentlyPlayedChampionImage">
-                                        <img src="../media/champion_squares_rounded/0.png" alt="none" width="45px">
+                                        <img src="https://riftstatistics.ddns.net/file/assets/championsqrrond/0.png" alt="none" width="45px">
                                     </div>
                                     <div id="" class="playedWithObject">
                                         <h1 id="" class="playedWithName">Not recently played</h1>
@@ -312,7 +312,7 @@
                             <div class="last20Images">
                                 <#list last20index as champion>
                                     <div class="last20Champ">
-                                        <img src="../media/champion_squares_rounded/${champion.getID()}.png" alt="${champion.getName()}" width="50px">
+                                        <img src="https://riftstatistics.ddns.net/file/assets/championsqrrond/${champion.getID()}.png" alt="${champion.getName()}" width="50px">
                                         <div class="last20ChampInfo">
                                             <h1>${champion.getWr()}%</h1>
                                             <h3>${champion.getWins()}W - ${champion.getLosses()}L</h3>
@@ -327,7 +327,7 @@
                                 <div class="historyGame" id="${game.getMatchId()}">
                                     <div class="historyGamePhotoInfo">
                                         <div class="${game.getPhotoResultStyle()}">
-                                            <img src="../media/champion_squares_rounded/${game.getChampID()}.png" alt="${game.getChampName()}" width="75px">
+                                            <img src="https://riftstatistics.ddns.net/file/assets/championsqrrond/${game.getChampID()}.png" alt="${game.getChampName()}" width="75px">
                                         </div>
                                         <div class="historyGameResult">
                                             <h1 class="${game.getGameResultStyle()}">${game.getGameResult()}</h1>
@@ -364,7 +364,7 @@
                             </div>
                             <div class="last20Images">
                                 <div class="last20Champ">
-                                    <img src="../media/champion_squares_rounded/0.png" alt="none" width="50px">
+                                    <img src="https://riftstatistics.ddns.net/file/assets/championsqrrond/0.png" alt="none" width="50px">
                                     <div class="last20ChampInfo">
                                         <h1></h1>
                                         <h3></h3>
@@ -414,7 +414,7 @@
 
 <!-- Fin del contenido de la pagina -->
 
-<script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
-<script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="https://riftstatistics.ddns.net/file/js/Utilities"></script>
 </body>
 </html>

@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>RiftStatistics</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/loader.css">
+  <link rel="stylesheet" href="https://riftstatistics.ddns.net/file/css/style">
+  <link rel="stylesheet" href="https://riftstatistics.ddns.net/file/css/loader">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-  <script src="../javascriptScripts/jquery-3.6.4.min.js"></script>
+  <script src="https://riftstatistics.ddns.net/file/js/Jquery"></script>
 </head>
 <body class="loaded">
 
@@ -110,7 +110,7 @@
   <div class="sidebar noselection" id="sidebar">
     <div class="sidebar-top">
       <div class="sidebar-logo">
-        <img src="../media/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
+        <img src="https://riftstatistics.ddns.net/file/assets/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
       </div>
       <svg id="sidebar-button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
@@ -171,7 +171,7 @@
         <div class="empty-col empty-row"></div>
         <div class="empty-col empty-row"></div>
         <div class="main-logo">
-          <img src="../media/logo/RiftStatisticsVertical.png" width="275" height="248.31" alt="RiftStatistics" >
+          <img src="https://riftstatistics.ddns.net/file/assets/logo/RiftStatisticsVertical.png" width="275" height="248.31" alt="RiftStatistics" >
         </div>
         <div class="empty-col empty-row"></div>
         <div class="empty-col empty-row"></div>
@@ -214,7 +214,7 @@
   </div>
 </div>
 
-<script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
-<script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="https://riftstatistics.ddns.net/file/js/Utilities"></script>
 </body>
 </html>

@@ -234,8 +234,8 @@ public class UserController {
 
     // ------------- General actions  ------------- //
 
-    @GetMapping("/browse/{username}/{appid}")
-    public String browse(@PathVariable("username") String username, @PathVariable("appid") String appid) {
+    @GetMapping("/browse/{username}")
+    public String browse(@PathVariable("username") String username) {
         StringBuilder formattedHtmlComplete = new StringBuilder();
         ArrayList<Summoner> summoners = new ArrayList<>();
         for (LeagueShard region : regions) {
@@ -246,7 +246,7 @@ public class UserController {
         }
 
         for (Summoner summoner: summoners) {
-            String summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/" + summoner.getProfileIconId() + ".jpg";
+            String summonerImg = "https://riftstatistics.ddns.net/file/assets/summIcon/" + summoner.getProfileIconId() + ".png";
             Image image = null;
             try {
                 image = ImageIO.read(new URL(summonerImg));
@@ -254,7 +254,7 @@ public class UserController {
                 System.out.println("Error when loading summoner " + summoner.getName() + " with region " + summoner.getPlatform().getRealmValue().toUpperCase());
             }
             if (image == null) {
-                summonerImg = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/29.jpg";
+                summonerImg = "https://riftstatistics.ddns.net/file/assets/summIcon/29.png";
             }
 
             String summonerName = summoner.getName();

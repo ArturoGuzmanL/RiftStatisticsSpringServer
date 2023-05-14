@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>RiftStatistics</title>
-    <link rel="stylesheet" href="../../Electron/css/styles.css">
-    <link rel="stylesheet" href="../css/loader.css">
+    <link rel="stylesheet" href="https://riftstatistics.ddns.net/file/css/style">
+    <link rel="stylesheet" href="https://riftstatistics.ddns.net/file/css/loader">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="../../Electron/javascriptScripts/jquery-3.6.4.min.js"></script>
+    <script src="https://riftstatistics.ddns.net/file/js/Jquery"></script>
 </head>
 
 <body>
@@ -117,7 +117,7 @@
         <div class="sidebar noselection" id="sidebar">
             <div class="sidebar-top">
                 <div class="sidebar-logo">
-                    <img src="../media/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
+                    <img src="https://riftstatistics.ddns.net/file/assets/logo/RiftStatisticsHorizontal.png" width="200" height="54.09" alt="RiftStatistics">
                 </div>
                 <svg id="sidebar-button" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
@@ -183,15 +183,15 @@
                         <#list section.getItems() as item>
                             <li id="${item.getName()}" class="item">
                                 <a href="#" class="ItemObject">
-                                    <img class="ItemImage" src="../media/itemIcons/${item.getID()}.png" alt="${item.getName()}">
+                                    <img class="ItemImage" src="https://riftstatistics.ddns.net/file/assets/itemIcon/${item.getID()}.png" alt="${item.getName()}">
                                 </a>
                                 <div class="itemTooltip" id="${item.getTooltipName()}">
                                     <div class="tooltipTitle">
-                                        <img src="../media/itemIcons/${item.getID()}.png" width="40" height="40">
+                                        <img src="https://riftstatistics.ddns.net/file/assets/itemIcon/${item.getID()}.png" width="40" height="40">
                                         <h1>${item.getName()}</h1>
                                         <div class="price">
                                             <h2>${item.getPrice()}</h2>
-                                            <img src="../media/itemIcons/${item.getGoldType()}.png" alt="${item.getGoldTypeB()}">
+                                            <img src="https://riftstatistics.ddns.net/file/assets/itemIcon/${item.getGoldType()}.png" alt="${item.getGoldTypeB()}">
                                         </div>
                                     </div>
                                     <div class="itemStats">
@@ -199,7 +199,7 @@
                                             <ul class="statsList">
                                                 <#list item.getItemStatsData() as stat>
                                                     <li class="statItem">
-                                                        <img src="../media/statIcons/${stat.getIconType()}.png">
+                                                        <img src="https://riftstatistics.ddns.net/file/assets/statIcon/${stat.getIconType()}.png">
                                                         <h1>${stat.getNumber()}</h1>
                                                         <h2>${stat.getType()}</h2>
                                                     </li>
@@ -261,7 +261,7 @@
 
 <!-- Fin del contenido de la pagina -->
 
-<script src="../node_modules/sweetalert2/src/SweetAlert.js"></script>
-<script type="module" src="../javascriptScripts/UtilitiesScripts.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="https://riftstatistics.ddns.net/file/js/Utilities"></script>
 </body>
 </html>
