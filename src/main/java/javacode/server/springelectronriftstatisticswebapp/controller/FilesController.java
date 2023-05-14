@@ -1,30 +1,30 @@
 package javacode.server.springelectronriftstatisticswebapp.controller;
 
 
+import javacode.server.springelectronriftstatisticswebapp.MailSender.EmailsSender;
+import javacode.server.springelectronriftstatisticswebapp.model.User;
+import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.core.io.ResourceLoader;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/file/")
@@ -32,6 +32,10 @@ public class FilesController {
 
     @Autowired
     private ApplicationContext context;
+    @Autowired
+    private EmailsSender emailsSender;
+    @Autowired
+    private UserRepository userRepository;
 
     // ------------- CSS ------------- //
 
@@ -49,6 +53,17 @@ public class FilesController {
     @GetMapping("css/loader")
     public ResponseEntity<String> getLoaderStyle() {
         try (FileReader reader = new FileReader("src/main/resources/static/css/loader.css");){
+            String data = getDataFromFile(reader);
+            return new ResponseEntity<>(data, HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("css/mail")
+    public ResponseEntity<String> getMailStyle() {
+        try (FileReader reader = new FileReader("src/main/resources/static/css/mail.css");){
             String data = getDataFromFile(reader);
             return new ResponseEntity<>(data, HttpStatus.OK);
         }catch (Exception e) {
@@ -156,6 +171,15 @@ public class FilesController {
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // ------------- HTML ------------- //
+
+    @GetMapping("email/register")
+    public String register() throws Exception {
+        Optional<User> userInfo = userRepository.findByUsername("blue");
+        emailsSender.sendEmail(userInfo.get());
+        return "Email Sent..!";
     }
 
 

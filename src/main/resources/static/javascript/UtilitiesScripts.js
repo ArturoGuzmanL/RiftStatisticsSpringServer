@@ -1,5 +1,6 @@
 const fs = require("fs");
 const $ = require( "jquery" );
+const SHA256 = require("crypto-js/sha256");
 const {ipcRenderer} = require("electron");
 const repl = require("repl");
 const {getFirstChild} = require("jsdom/lib/jsdom/living/domparsing/parse5-adapter-serialization");
@@ -10,10 +11,16 @@ const mousetrap = require("mousetraps");
 let openedOnButton = false;
 
 mousetrap.bind('f5', () => {
+  $('body').removeClass('loaded').css('overflow', 'hidden');
+  $('#page').html("");
+  $('#entry-title').removeClass("disabled");
   ipcRenderer.send('reload');
 });
 
 mousetrap.bind(['command+r', 'ctrl+r'], () => {
+  $('body').removeClass('loaded').css('overflow', 'hidden');
+  $('#page').html("");
+  $('#entry-title').removeClass("disabled");
   ipcRenderer.send('force-reload');
 });
 
@@ -203,10 +210,16 @@ $('#homePageButton').off('click').on('click', function(event) {
     if (reply) {
       ipcRenderer.send("get-uid");
       ipcRenderer.on("get-uid-reply", (event, uid) => {
-        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/home/" + reply + "/" + uid);
+        $('body').removeClass('loaded').css('overflow', 'hidden');
+        $('#page').html("");
+        $('#entry-title').removeClass("disabled");
+        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/home/" + reply + "/" + uid);
       });
     }else {
-        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/home/" + reply + "/null");
+      $('body').removeClass('loaded').css('overflow', 'hidden');
+      $('#page').html("");
+      $('#entry-title').removeClass("disabled");
+      ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/home/" + reply + "/null");
     }
   });
 });
@@ -217,10 +230,16 @@ $('#championsPageButton').off('click').on('click', function(event) {
     if (reply) {
       ipcRenderer.send("get-uid");
       ipcRenderer.on("get-uid-reply", (event, uid) => {
-        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/championlist/" + reply + "/" + uid);
+        $('body').removeClass('loaded').css('overflow', 'hidden');
+        $('#page').html("");
+        $('#entry-title').removeClass("disabled");
+        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/championlist/" + reply + "/" + uid);
       });
     }else {
-        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/championlist/" + reply + "/null");
+      $('body').removeClass('loaded').css('overflow', 'hidden');
+      $('#page').html("");
+      $('#entry-title').removeClass("disabled");
+      ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/championlist/" + reply + "/null");
     }
   });
 });
@@ -231,10 +250,16 @@ $('#itemsPageButton').off('click').on('click', function(event) {
     if (reply) {
       ipcRenderer.send("get-uid");
       ipcRenderer.on("get-uid-reply", (event, uid) => {
-        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/itemlist/" + reply + "/" + uid);
+        $('body').removeClass('loaded').css('overflow', 'hidden');
+        $('#page').html("");
+        $('#entry-title').removeClass("disabled");
+        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/itemlist/" + reply + "/" + uid);
       });
     }else {
-        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/itemlist/" + reply + "/null");
+      $('body').removeClass('loaded').css('overflow', 'hidden');
+      $('#page').html("");
+      $('#entry-title').removeClass("disabled");
+      ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/itemlist/" + reply + "/null");
     }
   });
 });
@@ -260,10 +285,16 @@ function getSummoner(isBrowser) {
     if (reply) {
       ipcRenderer.send("get-uid");
       ipcRenderer.on("get-uid-reply", (event, uid) => {
-        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/summonerPage/" + summID + "/" + region + "/" + reply + "/" + uid);
+        $('body').removeClass('loaded').css('overflow', 'hidden');
+        $('#page').html("");
+        $('#entry-title').removeClass("disabled");
+        ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/summonerPage/" + summID + "/" + region + "/" + reply + "/" + uid);
       });
     } else {
-      ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/api/htmlRequests/summonerPage/" + summID + "/" + region + "/" + reply + "/null");
+      $('body').removeClass('loaded').css('overflow', 'hidden');
+      $('#page').html("");
+      $('#entry-title').removeClass("disabled");
+      ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/summonerPage/" + summID + "/" + region + "/" + reply + "/null");
     }
   });
 }
@@ -301,10 +332,10 @@ $('#accountLink').off('click').on('click', function(event) {
       } else if (accountLink.children().last().text() === "this account is linked to your account") {
         toastmssg = "This LoL account is already linked to your RiftStatistics account. Would you like to unlink it from your account?"
         toastconfirm = "unlink";
+        confirmText = "Unlink";
       } else if (accountLink.children().last().text() === "you already have a LoL account linked to your account") {
         toastmssg = "You already have a LoL account linked to your RiftStatistics account. You need to unlink it first before linking a new one."
         toasttype = "error";
-        confirmText = "Unlink";
       }else if (accountLink.children().last().text() === "this account is already linked to an account") {
         toastmssg = "This LoL account is already linked to a RiftStatistics account. You cannot link it to your account."
         toasttype = "error";
@@ -343,30 +374,51 @@ $('#accountLink').off('click').on('click', function(event) {
       }).then((result) => {
         if (result.isConfirmed) {
           if (toastconfirm === "link") {
-            ipcRenderer.send("get-uid");
-            ipcRenderer.on("get-uid-reply", (event, uid) => {
-              let xhr = new XMLHttpRequest();
-              xhr.open('GET', `https://riftstatistics.ddns.net/api/linkAccount/${uid}/${lol}`, false);
-              xhr.onload = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                  Toast.fire({
-                    toast: true,
-                    icon: 'success',
-                    text: "This LoL account has been linked to your RiftStatistics account.",
-                    showCancelButton: false,
-                    confirmButtonText: 'Ok',
-                  })
-                }else {
-                  Toast.fire({
-                    icon: 'error',
-                    text: "There was an error.",
-                    showCancelButton: false,
-                    confirmButtonText: 'Ok',
-                  })
-                }
+            let user = $('#username').text();
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', `https://riftstatistics.ddns.net/page/linkAccount/${user}/${lol}`, false);
+            xhr.onload = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                Toast.fire({
+                  toast: true,
+                  icon: 'success',
+                  text: "This LoL account has been linked to your RiftStatistics account.",
+                  showCancelButton: false,
+                  confirmButtonText: 'Ok',
+                })
+              }else {
+                Toast.fire({
+                  icon: 'error',
+                  text: "There was an error.",
+                  showCancelButton: false,
+                  confirmButtonText: 'Ok',
+                })
               }
-              xhr.send();
-            });
+            }
+            xhr.send();
+          }else {
+            let user = $('#username').text();
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', `https://riftstatistics.ddns.net/page/unlinkAccount/${user}/${lol}`, false);
+            xhr.onload = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                Toast.fire({
+                  toast: true,
+                  icon: 'success',
+                  text: "This LoL account has been unlinked from your RiftStatistics account.",
+                  showCancelButton: false,
+                  confirmButtonText: 'Ok',
+                })
+              }else {
+                Toast.fire({
+                  icon: 'error',
+                  text: "There was an error.",
+                  showCancelButton: false,
+                  confirmButtonText: 'Ok',
+                })
+              }
+            }
+            xhr.send();
           }
         }
       });
@@ -436,11 +488,8 @@ $('#Login-button').off('click').on('click', function(event) {
   const username = $('#logUsername').val();
   const password = $('#logPassword').val();
   const remember = $('#rememberMe').is(":checked");
-  const { ipcRenderer } = require('electron');
-  ipcRenderer.send("encrypt-text", password);
-  ipcRenderer.on("encrypt-text-reply", (event, hashedPassword) => {
-    getLoginPetition(username, hashedPassword, remember);
-  });
+  let hashedPassword = SHA256(password).toString();
+  getLoginPetition(username, hashedPassword, remember);
 });
 
 function getLoginPetition(username, password, remember) {
@@ -468,7 +517,7 @@ function getLoginPetition(username, password, remember) {
   const { ipcRenderer } = require('electron');
   const fs = require("fs");
   const xhr = new XMLHttpRequest();
-  xhr.open('GET', `https://riftstatistics.ddns.net/api/users/actions/login/${username}=${password}`, false);
+  xhr.open('GET', `https://riftstatistics.ddns.net/page/users/actions/login/${username}?${password}`, false);
   xhr.send();
   let id = "";
   let logCorrect = false;
@@ -508,20 +557,8 @@ function getLoginPetition(username, password, remember) {
       background: 'rgba(11, 11, 35, 1)',
     }).then((result) => {
       if (logCorrect) {
-        ipcRenderer.send("get-tempfiles-folder");
-        ipcRenderer.on("get-tempfiles-folder-reply", (event, path) => {
-          const xhr2 = new XMLHttpRequest();
-          xhr2.open('GET', `https://riftstatistics.ddns.net/api/htmlRequests/home/initialization/true/${id}`, true);
-          xhr2.onload = function() {
-            if (xhr2.readyState === 4 && xhr2.status === 200) {
-              ipcRenderer.send('change-html', xhr2.responseText);
-            } else {
-              console.log("Error");
-              $('#logError').css('visibility', 'visible').html("ERROR: "+xhr2.status);
-            }
-          }
-          xhr2.send();
-        });
+        console.log(`${id}`)
+        ipcRenderer.send("change-html", `https://riftstatistics.ddns.net/page/htmlRequests/home/true/${id}`);
       }
     });
   }else {
@@ -534,9 +571,9 @@ function getLoginPetition(username, password, remember) {
 }
 
 $('#Signup-button').off('click').on('click', function(event) {
-  const username = $('#sigUsername').val();
-  const password = $('#sigPassword').val();
-  const email = $('#sigEmail').val();
+  let username = $('#sigUsername').val();
+    let password = $('#sigPassword').val();
+    let email = $('#sigEmail').val();
   let reply = SignUpActionValidator(username, password, email);
   let xhr;
   if (reply !== "") {
@@ -567,18 +604,9 @@ $('#Signup-button').off('click').on('click', function(event) {
   } else {
     xhr = new XMLHttpRequest();
     let data = "";
-    if (password%2 === 0) {
-      let temppass1 = password.substring(0, password.length/2);
-      let temppass2 = password.substring(password.length/2, password.length);
-      data = temppass1 + "=" + username + "=" + email + "=" + temppass2;
-    } else {
-      let middleIndex = Math.floor(password.length / 2);
-      let temppass1 = password.substring(0, middleIndex);
-      let temppass2 = password.charAt(middleIndex);
-      let temppass3 = password.substring(middleIndex + 1, password.length);
-      data = temppass1 + "=" + username + "=" + temppass2 + email + "=" + temppass3;
-    }
-    xhr.open('POST', `https://riftstatistics.ddns.net/api/users/actions/signup/${data}`, false);
+    let hashedPassword = SHA256(password).toString();
+    data = username + "@&@" + email + "@&@" + hashedPassword;
+    xhr.open('POST', `https://riftstatistics.ddns.net/page/users/actions/signup/${data}`, false);
     xhr.onload = function() {
       if (xhr.readyState === 4 && xhr.status === 201) {
         console.log("User created");
@@ -657,6 +685,9 @@ function SignUpActionValidator(username, password, email) {
   if (isWithinLengthLimits(password, 8, 20)) {
     return "Password must be between 8 and 20 characters";
   }
+  if (containstInvalidCharactersP(password)) {
+    return "Password cannot contain special characters such as spaces or these symbols: ^*¨'";
+  }
   if (isWithinLengthLimits(email, 1, 50)) {
     return "Email cannot have more than 50 characters";
   }
@@ -672,6 +703,10 @@ function SignUpActionValidator(username, password, email) {
 
 function isWithinLengthLimits(string, minLength, maxLength) {
   return string.length < minLength || string.length > maxLength;
+}
+
+function containstInvalidCharactersP(string) {
+  return !string.match(/[^ ^*¨']+/);
 }
 
 function containsInvalidCharacters(string) {
@@ -704,7 +739,7 @@ $('#BrowserInput').off('click').on('input', function(event) {
     timeoutId = setTimeout(function () {
       if (username === $('#BrowserInput').val()) {
         xhr = new XMLHttpRequest();
-        xhr.open('GET', `https://riftstatistics.ddns.net/api/browse/${username}`, true);
+        xhr.open('GET', `https://riftstatistics.ddns.net/page/browse/${username}`, true);
         xhr.onload = function () {
           if (xhr.readyState === 4 && xhr.status === 200) {
             if (username === $('#BrowserInput').val()) {
@@ -769,7 +804,7 @@ $('#logout-accept').on('click', function(event) {
   ipcRenderer.on("logout-from-account-reply", (event, arg) => {
     if(arg === true) {
       let xhr = new XMLHttpRequest();
-      xhr.open("GET", "https://riftstatistics.ddns.net/api/htmlRequests/home/initialization/false/null", true);
+      xhr.open("GET", "https://riftstatistics.ddns.net/page/htmlRequests/home/initialization/false/null", true);
       xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
           ipcRenderer.send("get-tempfiles-folder");
@@ -811,7 +846,7 @@ function previewFile(){
       const xhr = new XMLHttpRequest();
       ipcRenderer.send("get-uid");
       ipcRenderer.on("get-uid-reply", (event, uid) => {
-        xhr.open("POST", `https://riftstatistics.ddns.net/api/users/actions/profileimgupdt/${uid}`);
+        xhr.open("POST", `https://riftstatistics.ddns.net/page/users/actions/profileimgupdt/${uid}`);
         xhr.send(imgNormal);
       });
     });

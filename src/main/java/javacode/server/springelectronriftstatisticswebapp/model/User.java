@@ -36,7 +36,7 @@ public class User implements Serializable {
     public User (String username, String password, String email) {
         this.id = DigestUtils.sha256Hex(username + email + password);
         this.username = username;
-        this.password = DigestUtils.sha256Hex(password);
+        this.password = password;
         this.email = email;
         this.create_Date = LocalDate.now();
     }

@@ -698,4 +698,8 @@ public class HtmlFactory {
         return section;
     }
 
+    public Configuration getConfiguration() {
+        return cfg;
+    }
+
 }

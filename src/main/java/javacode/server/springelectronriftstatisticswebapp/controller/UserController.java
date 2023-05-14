@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/page/")
 
 public class UserController {
     ArrayList<LeagueShard> regions = new ArrayList<>();
@@ -79,7 +79,7 @@ public class UserController {
 
     // ------------- Account actions  ------------- //
 
-    @GetMapping("users/actions/login/{username}={password}")
+    @GetMapping("users/actions/login/{username}?{password}")
     public ResponseEntity<String> get(@PathVariable("username") String username, @PathVariable("password") String password) {
         Optional<User> user = userRepository.findByUsernameAndPassword(username, password);
         return user.map(value -> new ResponseEntity<>(value.getId(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -87,29 +87,13 @@ public class UserController {
 
     @PostMapping("users/actions/signup/{data}")
     public ResponseEntity<String> signup(@PathVariable("data") String data) {
-        String[] userData = data.split("=");
-        String username;
-        String password;
-        String email;
-        if (userData.length == 4) {
-            password = userData[0];
-            username = userData[1];
-            email = userData[2];
-            password += userData[3];
-        }else if (userData.length == 5) {
-            password = userData[0];
-            username = userData[1];
-            password += userData[2];
-            email = userData[3];
-            password += userData[4];
-        }else {
-            //Algo ha salido mal
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        String[] userData = data.split("@&@");
+        String username = userData[0];
+        String email = userData[1];
+        String password = userData[2];
         Optional<User> user = userRepository.findByUsername(username);
         Optional<User> user2 = userRepository.findByEmail(email);
         if (user.isPresent() || user2.isPresent()) {
-            //El usuario ya existe
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
             User newUser = new User(username, password, email);
@@ -133,8 +117,20 @@ public class UserController {
     @GetMapping("linkAccount/{uid}/{lol}")
     public ResponseEntity<Boolean> linkLoLAccount(@PathVariable("uid") String uid, @PathVariable("lol") String lol) {
         Optional<User> user = userRepository.findById(uid);
-        if (true) {
+        if (user.isPresent()) {
             user.get().setVinculatedlol(lol);
+            userRepository.save(user.get());
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("unlinkAccount/{name}/{lol}")
+    public ResponseEntity<Boolean> unlinkLoLAccount(@PathVariable("name") String name, @PathVariable("lol") String lol) {
+        Optional<User> user = userRepository.findByUsername(name);
+        if (user.isPresent() && user.get().getVinculatedlol().equals(lol)) {
+            user.get().setVinculatedlol("");
             userRepository.save(user.get());
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {

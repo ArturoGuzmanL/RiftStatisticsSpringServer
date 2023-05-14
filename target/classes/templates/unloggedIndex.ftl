@@ -61,9 +61,7 @@
   </div>
 
   <div class="popupSign">
-    <div>
-      <object class="close-btn" id="close-btn-sign">&times;</object>
-    </div>
+    <div class="close-btn" id="close-btn-sign">&times;</div>
     <div class="form">
       <h2>SignUp</h2>
       <div class="form_element">
@@ -72,7 +70,7 @@
       </div>
       <div class="form_element">
         <label for="sigEmail">Email</label>
-        <input type="email" id="sigEmail" placeholder="password...">
+        <input type="email" id="sigEmail" placeholder="email...">
       </div>
       <div class="form_element">
         <label for="sigPassword">Password</label>
