@@ -2,6 +2,7 @@ package javacode.server.springelectronriftstatisticswebapp.controller;
 
 
 import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
+import javacode.server.springelectronriftstatisticswebapp.MailSender.EmailsSender;
 import javacode.server.springelectronriftstatisticswebapp.SecretFile;
 import javacode.server.springelectronriftstatisticswebapp.model.User;
 import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
@@ -65,6 +66,8 @@ public class UserController {
     UserRepository userRepository;
     @Autowired
     HtmlFactory htmlFactory;
+    @Autowired
+    private EmailsSender emailsSender;
 
 //    @GetMapping("/all")
 //    public List<User> list() {
@@ -82,7 +85,15 @@ public class UserController {
     @GetMapping("users/actions/login/{username}?{password}")
     public ResponseEntity<String> get(@PathVariable("username") String username, @PathVariable("password") String password) {
         Optional<User> user = userRepository.findByUsernameAndPassword(username, password);
-        return user.map(value -> new ResponseEntity<>(value.getId(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (user.isPresent()) {
+            if (user.get().isVerified()) {
+                return new ResponseEntity<>(user.get().getId(), HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("users/actions/signup/{data}")
@@ -96,9 +107,14 @@ public class UserController {
         if (user.isPresent() || user2.isPresent()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
-            User newUser = new User(username, password, email);
-            userRepository.save(newUser);
-            return new ResponseEntity<>(newUser.getId(), HttpStatus.CREATED);
+            try {
+                User newUser = new User(username, password, email);
+                userRepository.save(newUser);
+                emailsSender.sendConfirmationEmail(newUser);
+                return new ResponseEntity<>(newUser.getId(), HttpStatus.CREATED);
+            }catch (Exception e){
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
     }
 

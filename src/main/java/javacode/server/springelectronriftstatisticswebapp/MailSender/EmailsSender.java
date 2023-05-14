@@ -27,7 +27,7 @@ public class EmailsSender {
         configuration = HtmlFactory.getInstance().getConfiguration();
     }
 
-    public void sendEmail(User user) throws MessagingException, IOException, TemplateException {
+    public void sendConfirmationEmail(User user) throws MessagingException, IOException, TemplateException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         helper.setSubject("Bienvenido a RiftStatistics");

@@ -131,7 +131,7 @@
                 <tr>
                     <td align="left" valign="top" style="padding: 36px 24px;">
                         <a href="" target="_self" style="display: inline-block;">
-                            <img src="https://riftstatistics.ddns.net/file/assets/logo/RiftStatisticsHorizontal.png" alt="Logo" width="96" border="0" style="display: block; width: 96px; max-width: 96px; min-width: 48px;">
+                            <img src="https://riftstatistics.ddns.net/file/assets/logo/RiftStatisticsHorizontal.png" alt="Logo" width="150" border="0" style="display: block; width: 150px; max-width: 150px; min-width: 55px;">
                         </a>
                     </td>
                 </tr>
@@ -196,7 +196,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td id="button" align="center" style="border-radius: 6px; background: #1a82e2; cursor: pointer; user-select: none;">
-                                                <a href="#" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Do Something Sweet</a>
+                                                <a href="#" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify your account</a>
                                             </td>
                                         </tr>
                                     </table>

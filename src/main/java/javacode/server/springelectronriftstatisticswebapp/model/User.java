@@ -22,7 +22,7 @@ import java.time.LocalDate;
 @EntityListeners(AuditingEntityListener.class)
 
 public class User implements Serializable {
-    public User (String ID, String username, String email, String password, LocalDate create_Date, String vinculatedlol, String lolregion, byte[] accountimage) {
+    public User (String ID, String username, String email, String password, LocalDate create_Date, String vinculatedlol, String lolregion, byte[] accountimage, boolean verified) {
         this.id = ID;
         this.username = username;
         this.email = email;
@@ -31,6 +31,7 @@ public class User implements Serializable {
         this.vinculatedlol = vinculatedlol;
         this.lolregion = lolregion;
         this.accountimage = accountimage;
+        this.verified = verified;
     }
 
     public User (String username, String password, String email) {
@@ -39,6 +40,7 @@ public class User implements Serializable {
         this.password = password;
         this.email = email;
         this.create_Date = LocalDate.now();
+        this.verified = false;
     }
 
     public User () {
@@ -61,6 +63,8 @@ public class User implements Serializable {
     private String lolregion = null;
     @Column(name = "accountimage", length = -1, nullable = true)
     private byte[] accountimage;
+    @Column(name = "verified")
+    private boolean verified;
 
     // getters y setters
 
@@ -128,8 +132,16 @@ public class User implements Serializable {
         this.accountimage = accountimage;
     }
 
+    public boolean isVerified () {
+        return verified;
+    }
+
+    public void setVerified (boolean verified) {
+        this.verified = verified;
+    }
+
     public boolean noneNull() {
-        return id != null && username != null && password != null && email != null && create_Date != null && vinculatedlol != null && accountimage != null && lolregion != null;
+        return id != null && username != null && password != null && email != null && create_Date != null && vinculatedlol != null && accountimage != null && lolregion != null && verified;
     }
 
     @Override

@@ -173,13 +173,22 @@ public class FilesController {
         }
     }
 
-    // ------------- HTML ------------- //
+        // ------------- Mail ------------- //
 
-    @GetMapping("email/register")
-    public String register() throws Exception {
-        Optional<User> userInfo = userRepository.findByUsername("blue");
-        emailsSender.sendEmail(userInfo.get());
-        return "Email Sent..!";
+    @GetMapping("mail/verify/{username}")
+    public ResponseEntity<Boolean> register(@PathVariable String username) {
+        try {
+            Optional<User> userInfo = userRepository.findByUsername(username);
+            if (userInfo.isPresent()) {
+                emailsSender.sendConfirmationEmail(userInfo.get());
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+            }
+
+        }catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

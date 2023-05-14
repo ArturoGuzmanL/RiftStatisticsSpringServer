@@ -546,6 +546,14 @@ function getLoginPetition(username, password, remember) {
       title: "Incorrect username or password"
     })
     return;
+  }else if (xhr.readyState === 4 && xhr.status === 403) {
+
+    Toast.fire({
+      icon: 'error',
+      title: "You need to verify your email first",
+      html: `<a href="https://riftstatistics.ddns.net/file/mail/verify/${username}">Click here to resend the email</a>`
+    })
+    return;
   }
   if (logCorrect) {
     Swaldef.fire({
