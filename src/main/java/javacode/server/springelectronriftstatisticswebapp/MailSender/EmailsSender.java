@@ -40,7 +40,7 @@ public class EmailsSender {
     String getEmailContent(User user) throws IOException, TemplateException {
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
-        model.put("user", user);
+        model.put("verificationlink", "https://riftstatistics.ddns.net/page/users/actions/verification/" + user.getId());
         configuration.getTemplate("RegistrationMail.ftl").process(model, stringWriter);
         return stringWriter.getBuffer().toString();
     }

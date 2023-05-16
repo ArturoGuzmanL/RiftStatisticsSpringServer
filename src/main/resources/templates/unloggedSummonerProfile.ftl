@@ -181,7 +181,7 @@
                         <img class="noselection" src="https://riftstatistics.ddns.net/file/assets/summIcon/${profileImageID}.png" alt="${profileImageID}" width="125px">
                     </div>
                 </div>
-                <div class="profileInfo" id="${profilePUUID}">
+                <div class="profileInfo" id="${profilePUUID}@&@${profileRegion}">
                     <div class="profileName">
                         <h1 id="profileName">${profileUsername}</h1>
                     </div>

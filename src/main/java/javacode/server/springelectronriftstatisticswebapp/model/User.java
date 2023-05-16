@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-@Table(name="users", schema = "public")
+@Table(name="users")
 @EntityListeners(AuditingEntityListener.class)
 
 public class User implements Serializable {
@@ -47,21 +47,22 @@ public class User implements Serializable {
     }
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "id")
     private String id = null;
-    @Column(name = "Username")
+    @Column(name = "username")
     private String username = null;
-    @Column(name = "Email")
+    @Column(name = "email")
     private String email = null;
     @Column(name = "password")
     private String password = null;
-    @Column(name = "Creationdate")
+    @Column(name = "creationdate")
     private LocalDate create_Date = null;
     @Column(name = "vinculatedlol")
     private String vinculatedlol = null;
     @Column(name = "lolregion")
     private String lolregion = null;
-    @Column(name = "accountimage", length = -1, nullable = true)
+    @Lob
+    @Column(name = "accountimage")
     private byte[] accountimage;
     @Column(name = "verified")
     private boolean verified;
@@ -154,5 +155,9 @@ public class User implements Serializable {
                 ", LoLRegion='" + lolregion + '\'' +
                 ", AccountImage='" + accountimage + '\'' +
                 '}';
+    }
+
+    public boolean HaslolAccount () {
+        return vinculatedlol != null;
     }
 }

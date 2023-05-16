@@ -73,6 +73,14 @@
                     </div>
                 </div>
                 <ul>
+                    <#if haslolAccount??>
+                        <li>
+                            <a href="#" id="lolAccountButton">
+                                <img id="${lolPUUID}@&@${lolRegion}" class="userLolAccount" src="https://riftstatistics.ddns.net/file/assets/summIcon/${lolPhoto}.png">
+                                <span class="sidebar-nav-item">${lolName}</span>
+                            </a>
+                        </li>
+                    </#if>
                     <li>
                         <a href="#" id="homePageButton">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
@@ -121,7 +129,7 @@
                     <img class="noselection" src="https://riftstatistics.ddns.net/file/assets/summIcon/${profileImageID}.png" alt="${profileImageID}" width="125px">
                 </div>
             </div>
-            <div class="profileInfo" id="${profilePUUID}">
+            <div class="profileInfo" id="${profilePUUID}@&@${profileRegion}">
                 <div class="profileName">
                     <h1 id="profileName">${profileUsername}</h1>
                 </div>
@@ -216,7 +224,7 @@
                     <div class="recentlyPlayedContent" id="recentlyPlayedContent">
                         <#if summonerIndex??>
                             <#list summonerIndex as summoner>
-                                <div class="recentlyPlayedSummoner" id="${summoner.getPUUID()}">
+                                <div class="recentlyPlayedSummoner" id="${summoner.getPUUID()}@&@${summoner.getRegion()}">
                                     <div class="recentlyPlayedChampionImage">
                                         <img src="https://riftstatistics.ddns.net/file/assets/summIcon/${summoner.getImgID()}.png" alt="${summoner.getName()}" width="45px">
                                     </div>

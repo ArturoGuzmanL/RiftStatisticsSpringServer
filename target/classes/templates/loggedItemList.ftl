@@ -75,6 +75,14 @@
                 </div>
             </div>
             <ul>
+                <#if haslolAccount??>
+                    <li>
+                        <a href="#" id="lolAccountButton">
+                            <img id="${lolPUUID}@&@${lolRegion}" class="userLolAccount" src="https://riftstatistics.ddns.net/file/assets/summIcon/${lolPhoto}.png">
+                            <span class="sidebar-nav-item">${lolName}</span>
+                        </a>
+                    </li>
+                </#if>
                 <li>
                     <a href="#" id="homePageButton">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">

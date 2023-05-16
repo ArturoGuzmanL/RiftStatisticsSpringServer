@@ -112,7 +112,7 @@
 
 <!-- start preheader -->
 <div class="preheader" style="display: none; max-width: 0; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #fff; opacity: 0;">
-    A preheader is the short summary text that follows the subject line when an email is viewed in the inbox.
+    Please verify your account from RiftStatistics to start using the app!
 </div>
 <!-- end preheader -->
 
@@ -196,7 +196,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td id="button" align="center" style="border-radius: 6px; background: #1a82e2; cursor: pointer; user-select: none;">
-                                                <a href="#" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify your account</a>
+                                                <a href="${verificationlink}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Verify your account</a>
                                             </td>
                                         </tr>
                                     </table>
@@ -211,7 +211,7 @@
                 <tr>
                     <td align="left" bgcolor="#0a0c23" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-right: 2px solid rgba(105, 105, 149, 1); border-left: 2px solid rgba(105, 105, 149, 1);">
                         <p style="margin: 0; color: #FFFFFF;">If the button doesn't work please click here or copy and paste the link:</p>
-                        <p style="margin: 0;"><a href="#" target="_blank">https://same-link-as-button.url/xxx-xxx-xxxx</a></p>
+                        <p style="margin: 0;"><a href="${verificationlink}" target="_blank">${verificationlink}</a></p>
                     </td>
                 </tr>
                 <!-- end copy -->

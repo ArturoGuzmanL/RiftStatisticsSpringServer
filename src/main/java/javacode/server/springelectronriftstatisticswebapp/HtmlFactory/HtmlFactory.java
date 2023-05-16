@@ -29,7 +29,6 @@ import no.stelar7.api.r4j.pojo.lol.match.v5.MatchParticipant;
 import no.stelar7.api.r4j.pojo.lol.staticdata.champion.StaticChampion;
 import no.stelar7.api.r4j.pojo.lol.staticdata.item.Item;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,6 +100,14 @@ public class HtmlFactory {
                 Map<String, Object> data = new HashMap<>();
                 data.put("Username", user.getUsername());
                 data.put("UsernamePhoto", img);
+                if (user.HaslolAccount()) {
+                    data.put("haslolAccount", user.HaslolAccount());
+                    Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(LeagueShard.fromString(user.getLolregion()).get(), user.getVinculatedlol());
+                    data.put("lolPhoto", String.valueOf(summoner.getProfileIconId()).replace(".", ""));
+                    data.put("lolPUUID", user.getVinculatedlol());
+                    data.put("lolRegion", user.getLolregion());
+                    data.put("lolName", summoner.getName());
+                }
 
                 StringWriter out = new StringWriter();
                 template.process(data, out);
@@ -152,6 +159,15 @@ public class HtmlFactory {
 
                 data.put("Username", user.getUsername());
                 data.put("UsernamePhoto", img);
+
+                if (user.HaslolAccount()) {
+                    data.put("haslolAccount", user.HaslolAccount());
+                    Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(LeagueShard.fromString(user.getLolregion()).get(), user.getVinculatedlol());
+                    data.put("lolPhoto", String.valueOf(summoner.getProfileIconId()).replace(".", ""));
+                    data.put("lolPUUID", user.getVinculatedlol());
+                    data.put("lolRegion", user.getLolregion());
+                    data.put("lolName", summoner.getName());
+                }
             }else {
                 template = cfg.getTemplate("unloggedChampList.ftl");
             }
@@ -216,6 +232,15 @@ public class HtmlFactory {
 
                 data.put("Username", user.getUsername());
                 data.put("UsernamePhoto", img);
+
+                if (user.HaslolAccount()) {
+                    data.put("haslolAccount", user.HaslolAccount());
+                    Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(LeagueShard.fromString(user.getLolregion()).get(), user.getVinculatedlol());
+                    data.put("lolPhoto", String.valueOf(summoner.getProfileIconId()).replace(".", ""));
+                    data.put("lolPUUID", user.getVinculatedlol());
+                    data.put("lolRegion", user.getLolregion());
+                    data.put("lolName", summoner.getName());
+                }
             } else {
                 template = cfg.getTemplate("unloggedSummonerProfile.ftl");
             }
@@ -437,6 +462,7 @@ public class HtmlFactory {
                 Summoner summ = Summoner.bySummonerId(leagueS.get(), entry.getName());
                 entry.setImgID(String.valueOf(summ.getProfileIconId()));
                 entry.setPUUID(summ.getPUUID());
+                entry.setRegion(leagueShard);
                 entry.setName(summ.getName());
                 mostPlayedWithSummoners.add(entry);
                 count++;
@@ -509,6 +535,7 @@ public class HtmlFactory {
             }
 
             data.put("profilePUUID", summonerPUUID);
+            data.put("profileRegion", leagueShard);
             data.put("profileLevel", summoner.getSummonerLevel());
             data.put("profileImageID", String.valueOf(summoner.getProfileIconId()).replace(".", ""));
             data.put("profileUsername", summoner.getName());
@@ -565,6 +592,14 @@ public class HtmlFactory {
 
                 data.put("Username", user.getUsername());
                 data.put("UsernamePhoto", img);
+                if (user.HaslolAccount()) {
+                    data.put("haslolAccount", user.HaslolAccount());
+                    Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(LeagueShard.fromString(user.getLolregion()).get(), user.getVinculatedlol());
+                    data.put("lolPhoto", String.valueOf(summoner.getProfileIconId()).replace(".", ""));
+                    data.put("lolPUUID", user.getVinculatedlol());
+                    data.put("lolRegion", user.getLolregion());
+                    data.put("lolName", summoner.getName());
+                }
             } else {
                 template = cfg.getTemplate("unloggedItemList.ftl");
             }
@@ -696,6 +731,21 @@ public class HtmlFactory {
         }
         section.setItems(items);
         return section;
+    }
+
+    public String getVerificationConfirm() {
+        try {
+            String html;
+            Template template = cfg.getTemplate("verificationConfirm.ftl");
+            Map<String, Object> data = new HashMap<>();
+            StringWriter writer = new StringWriter();
+            template.process(data, writer);
+            html = writer.toString();
+            return html;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Configuration getConfiguration() {

@@ -82,7 +82,7 @@ public class UserController {
 
     // ------------- Account actions  ------------- //
 
-    @GetMapping("users/actions/login/{username}?{password}")
+    @GetMapping("users/actions/login/{username}@&@{password}")
     public ResponseEntity<String> get(@PathVariable("username") String username, @PathVariable("password") String password) {
         Optional<User> user = userRepository.findByUsernameAndPassword(username, password);
         if (user.isPresent()) {
@@ -104,13 +104,14 @@ public class UserController {
         String password = userData[2];
         Optional<User> user = userRepository.findByUsername(username);
         Optional<User> user2 = userRepository.findByEmail(email);
-        if (user.isPresent() || user2.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        if (user.isPresent()) {
+            return new ResponseEntity<>("username is already in use", HttpStatus.CONFLICT);
+        } else if (user2.isPresent()) {
+            return new ResponseEntity<>("Email is already in use", HttpStatus.CONFLICT);
         } else {
             try {
                 User newUser = new User(username, password, email);
                 userRepository.save(newUser);
-                emailsSender.sendConfirmationEmail(newUser);
                 return new ResponseEntity<>(newUser.getId(), HttpStatus.CREATED);
             }catch (Exception e){
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -130,11 +131,25 @@ public class UserController {
         }
     }
 
-    @GetMapping("linkAccount/{uid}/{lol}")
-    public ResponseEntity<Boolean> linkLoLAccount(@PathVariable("uid") String uid, @PathVariable("lol") String lol) {
+    @GetMapping("users/actions/verification/{uid}")
+    public ResponseEntity<String> verify(@PathVariable("uid") String uid) {
         Optional<User> user = userRepository.findById(uid);
         if (user.isPresent()) {
+            user.get().setVerified(true);
+            userRepository.save(user.get());
+            String html = htmlFactory.getVerificationConfirm();
+            return new ResponseEntity<>(html, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("linkAccount/{name}/{lol}@&@{region}")
+    public ResponseEntity<Boolean> linkLoLAccount(@PathVariable("name") String name, @PathVariable("lol") String lol, @PathVariable("region") String region) {
+        Optional<User> user = userRepository.findByUsername(name);
+        if (user.isPresent()) {
             user.get().setVinculatedlol(lol);
+            user.get().setLolregion(region);
             userRepository.save(user.get());
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
@@ -146,7 +161,8 @@ public class UserController {
     public ResponseEntity<Boolean> unlinkLoLAccount(@PathVariable("name") String name, @PathVariable("lol") String lol) {
         Optional<User> user = userRepository.findByUsername(name);
         if (user.isPresent() && user.get().getVinculatedlol().equals(lol)) {
-            user.get().setVinculatedlol("");
+            user.get().setVinculatedlol(null);
+            user.get().setLolregion(null);
             userRepository.save(user.get());
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {

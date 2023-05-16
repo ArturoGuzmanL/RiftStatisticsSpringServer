@@ -2,7 +2,9 @@ package javacode.server.springelectronriftstatisticswebapp.controller;
 
 
 import javacode.server.springelectronriftstatisticswebapp.MailSender.EmailsSender;
+import javacode.server.springelectronriftstatisticswebapp.model.Cookie;
 import javacode.server.springelectronriftstatisticswebapp.model.User;
+import javacode.server.springelectronriftstatisticswebapp.repository.CookieRepository;
 import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -36,6 +38,8 @@ public class FilesController {
     private EmailsSender emailsSender;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CookieRepository cookieRepository;
 
     // ------------- CSS ------------- //
 
@@ -53,17 +57,6 @@ public class FilesController {
     @GetMapping("css/loader")
     public ResponseEntity<String> getLoaderStyle() {
         try (FileReader reader = new FileReader("src/main/resources/static/css/loader.css");){
-            String data = getDataFromFile(reader);
-            return new ResponseEntity<>(data, HttpStatus.OK);
-        }catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("css/mail")
-    public ResponseEntity<String> getMailStyle() {
-        try (FileReader reader = new FileReader("src/main/resources/static/css/mail.css");){
             String data = getDataFromFile(reader);
             return new ResponseEntity<>(data, HttpStatus.OK);
         }catch (Exception e) {
@@ -97,6 +90,53 @@ public class FilesController {
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         }catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("js/auth")
+    public ResponseEntity<String> getAuthJS() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf("text/javascript"));
+        try (FileReader reader = new FileReader("src/main/resources/static/javascript/auth-service.js");){
+            String data = getDataFromFile(reader);
+            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ------------- COOKIE ------------- //
+
+    @GetMapping("cookie/request/{id}")
+    public ResponseEntity<String> getCookie(@PathVariable String id) {
+        try {
+            Optional<Cookie> cookie = cookieRepository.findByUserid(id);
+            if (cookie.isPresent()) {
+                return new ResponseEntity<>(cookie.get().getIp(), HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "cookie/create/{ip}@&@{id}")
+    public ResponseEntity<String> createCookie(@PathVariable String ip, @PathVariable String id) {
+        try {
+            Optional<User> user = userRepository.findById(id);
+            if (user.isPresent()) {
+                Cookie cookie = new Cookie();
+                cookie.setUserid(id);
+                cookie.setIp(ip);
+                cookieRepository.save(cookie);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -173,7 +213,7 @@ public class FilesController {
         }
     }
 
-        // ------------- Mail ------------- //
+    // ------------- Mail ------------- //
 
     @GetMapping("mail/verify/{username}")
     public ResponseEntity<Boolean> register(@PathVariable String username) {
