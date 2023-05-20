@@ -287,6 +287,16 @@ $('#itemsPageButton').off('click').on('click', function(event) {
   });
 });
 
+$('#settingsPageButton').off('click').on('click', function(event) {
+  ipcRenderer.send("get-uid");
+  ipcRenderer.on("get-uid-reply", (event, uid) => {
+    $('body').removeClass('loaded').css('overflow', 'hidden');
+    $('#page').html("");
+    $('#entry-title').removeClass("disabled");
+    ipcRenderer.send("change-html", "https://riftstatistics.ddns.net/page/htmlRequests/accSettings/" + uid);
+  });
+});
+
 $('#browserListContainer').off('click', 'li.browserItem').on('click', 'li.browserItem', function() {
   getSummoner.call(this, true);
 });
@@ -557,7 +567,6 @@ function getLoginPetition(username, password, remember) {
       icon: 'error',
       title: "Incorrect username or password"
     })
-    return;
   }else if (xhr.readyState === 4 && xhr.status === 403) {
 
     Toast.fire({
@@ -566,9 +575,8 @@ function getLoginPetition(username, password, remember) {
       confirmButtonText: 'Ok',
       icon: 'error',
       title: "Please verify your email first",
-      html: `Click <a href="https://riftstatistics.ddns.net/file/mail/verify/${username}" class="mailLink">here</a> to resent the verification email`
+      html: `Click <a href="https://riftstatistics.ddns.net/file/mail/verify/${username}" class="mailLink">here</a> to resend the verification email`
     })
-    return;
   }
   if (logCorrect) {
     ipcRenderer.send('log-action-toast', 'Logged in successfully', `https://riftstatistics.ddns.net/page/htmlRequests/home/true/${id}`);
@@ -581,11 +589,13 @@ function getLoginPetition(username, password, remember) {
 
 }
 
-$('#Signup-button').off('click').on('click', function(event) {
+$('#Signup-button').off('click').on('click', async function (event) {
   let username = $('#sigUsername').val();
   let password = $('#sigPassword').val();
   let email = $('#sigEmail').val();
   let created = false;
+  let publicIP = await getIP();
+  console.log(publicIP);
   let reply = SignUpActionValidator(username, password, email);
   let xhr;
   if (reply !== "") {
@@ -617,9 +627,9 @@ $('#Signup-button').off('click').on('click', function(event) {
     xhr = new XMLHttpRequest();
     let data = "";
     let hashedPassword = SHA256(password).toString();
-    data = username + "@&@" + email + "@&@" + hashedPassword;
+    data = username + "@&@" + email + "@&@" + hashedPassword + "@&@" + publicIP;
     xhr.open('POST', `https://riftstatistics.ddns.net/page/users/actions/signup/${data}`, false);
-    xhr.onload = function() {
+    xhr.onload = function () {
       if (xhr.readyState === 4 && xhr.status === 201) {
         console.log("User created");
         const Toast = Swaldef.mixin({
@@ -874,3 +884,18 @@ function previewFile(){
     reader2.readAsBinaryString(file)
   }
 }
+
+function getIP() {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.send('get-ip');
+
+    ipcRenderer.once('get-ip-reply', (event, ipreply) => {
+      resolve(ipreply);
+    });
+
+    ipcRenderer.once('get-ip-error', (event, error) => {
+      reject(error);
+    });
+  });
+}
+

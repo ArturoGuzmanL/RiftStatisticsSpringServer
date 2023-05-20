@@ -2,13 +2,16 @@
 
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
     font-family: "Montserrat", sans-serif;
     font-weight: 500;
     font-size: 16px;
     text-decoration: none;
     color: #FFFFFF;
+    padding: initial;
+}
+
+h1, h3 {
+    margin: 0 !important;
 }
 
 /* Estilos del header */
@@ -474,11 +477,11 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     box-shadow: inset 0 0 0 1000px rgba(0,0,0,.50);
     /*background-image: linear-gradient(313deg,#f0555f 20%, #f16754 100%);*/
     background-image: linear-gradient(to bottom, #5555a5 25%, #373771 50%, #373771 100%);
-    margin: 0;
-    padding: 0.4rem 0.8rem;
+    margin: 0 !important;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: fixed;
     left: 0;
+    top: 0;
     height: 100%;
     width: 80px;
     transition: width 0.5s ease;
@@ -532,6 +535,10 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     transition: all 0.5s ease;
 }
 
+.sidebar-top {
+    padding: 0.4rem 0.8rem;
+}
+
 .sidebar .sidebar-top .sidebar-logo {
     transform: translateX(-250px);
     color: #FFFFFF;
@@ -559,6 +566,12 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     display: flex;
     align-items: center;
     margin: 1rem 0;
+    padding: 0.4rem 0.8rem 0.7rem 0.8rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.sidebarList {
+    padding: 0 0.8rem;
 }
 
 .sidebar-user p {
@@ -1379,10 +1392,15 @@ body.filtered .page > div:not(.popupBrowserWindow) {
 .itemsTitle,
 .ChampionsTitle {
     position: relative;
-    top: 10rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    top: 5rem;
     color: #ffffff;
     text-align: center;
-    width: 100%;
+    width: calc(100% - 80px);
+    transform: translateX(+80px);
     height: 50%;
 }
 
@@ -2032,7 +2050,6 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
-    top: 0.75rem;
     right: 0.75rem;
     gap: 1rem;
     height: fit-content;
@@ -2047,20 +2064,19 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     margin-left: 1.5rem;
     position: relative;
     display: flex;
-    align-items: center;
     justify-content: flex-start;
     text-align: center;
     gap: 4rem;
     padding-right: 0.25rem;
     margin-right: 4rem;
-    margin-top: 0.85rem;
-    transition: margin-left 0.5s ease 0s;
+    bottom: 5%;
+    transition: all 0.5s ease 0s;
 }
 
 @media (max-width: 1300px) {
     .historyGameStatNumbers {
         margin-left: 1.5rem;
-        transition: margin-left 0.5s ease 0s;
+        transition: all 0.5s ease 0s;
     }
 
     .historyGameStatNumbers h1 {

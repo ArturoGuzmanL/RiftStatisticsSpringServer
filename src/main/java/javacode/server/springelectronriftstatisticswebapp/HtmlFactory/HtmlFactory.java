@@ -124,7 +124,7 @@ public class HtmlFactory {
                 if (initialization) {
                     template = cfg.getTemplate("cleanUnloggedIndex.ftl");
                 }else {
-                 template = cfg.getTemplate("unloggedIndex.ftl");
+                    template = cfg.getTemplate("unloggedIndex.ftl");
                 }
                 StringWriter out = new StringWriter();
                 template.process(null, out);
@@ -218,7 +218,7 @@ public class HtmlFactory {
             Map<String, Object> data = new HashMap<>();
             if (logged) {
                 template = cfg.getTemplate("loggedSummonerProfile.ftl");
-                 user = args[0];
+                user = args[0];
 
                 String img = "data:image/jpeg;base64,";
                 byte[] bytesImg = user.getAccountimage();
@@ -571,6 +571,74 @@ public class HtmlFactory {
     }
 
 
+    public String accSettings (User userAcc) {
+        try {
+            String html;
+            Template template;
+            Map<String, Object> data = new HashMap<>();
+            template = cfg.getTemplate("loggedAccountSettings.ftl");
+            User user = userAcc;
+
+            String img = "data:image/jpeg;base64,";
+            byte[] bytesImg = user.getAccountimage();
+            String base64Img;
+            if (bytesImg == null) {
+                base64Img = DEFAULT_USER_IMAGE;
+            } else {
+                base64Img = java.util.Base64.getEncoder().encodeToString(bytesImg);
+            }
+            img += base64Img;
+
+            data.put("Username", user.getUsername());
+            data.put("accountName", user.getUsername());
+            data.put("UsernamePhoto", img);
+            data.put("accountEmail", user.getEmail());
+            data.put("accountBirthday", user.getAccountbirthday());
+            data.put("accountMember", user.getCreationdate());
+            Optional<LeagueShard> leagueS = LeagueShard.fromString(user.getLolregion());
+            if (user.HaslolAccount()) {
+                data.put("haslolAccount", user.HaslolAccount());
+                Summoner summoner = SummonerAPI.getInstance().getSummonerByPUUID(LeagueShard.fromString(user.getLolregion()).get(), user.getVinculatedlol());
+                data.put("lolPhoto", String.valueOf(summoner.getProfileIconId()).replace(".", ""));
+                data.put("lolPUUID", user.getVinculatedlol());
+                data.put("lolRegion", user.getLolregion());
+                data.put("lolName", summoner.getName());
+            }
+
+            StringWriter out = new StringWriter();
+            template.process(data, out);
+            html = out.toString();
+
+            return html;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String PassChange (User user) {
+        try {
+            String html;
+            Template template;
+            Map<String, Object> data = new HashMap<>();
+            template = cfg.getTemplate("passwordChangeWeb.ftl");
+
+            data.put("userID", user.getId());
+
+            StringWriter out = new StringWriter();
+            template.process(data, out);
+            html = out.toString();
+
+            return html;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public String itemsPage (boolean logged, User ... args) {
         try {
             String html;
@@ -664,9 +732,6 @@ public class HtmlFactory {
             ItemStatsData itemStatsData = new ItemStatsData();
             ItemDescData itemDescData = new ItemDescData();
             String name = item.getName();
-            if (name.contains("Spear Of")) {
-                name = name;
-            }
             Integer type = 1;
             String price = item.getGold().getTotal() + "g";
             if (isChampionItems) {
@@ -733,10 +798,10 @@ public class HtmlFactory {
         return section;
     }
 
-    public String getVerificationConfirm() {
+    public String getVerificationConfirmWeb() {
         try {
             String html;
-            Template template = cfg.getTemplate("verificationConfirm.ftl");
+            Template template = cfg.getTemplate("verificationConfirmWeb.ftl");
             Map<String, Object> data = new HashMap<>();
             StringWriter writer = new StringWriter();
             template.process(data, writer);

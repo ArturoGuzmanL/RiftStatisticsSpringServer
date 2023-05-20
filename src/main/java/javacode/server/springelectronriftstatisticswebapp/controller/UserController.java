@@ -4,7 +4,9 @@ package javacode.server.springelectronriftstatisticswebapp.controller;
 import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
 import javacode.server.springelectronriftstatisticswebapp.MailSender.EmailsSender;
 import javacode.server.springelectronriftstatisticswebapp.SecretFile;
+import javacode.server.springelectronriftstatisticswebapp.model.Cookie;
 import javacode.server.springelectronriftstatisticswebapp.model.User;
+import javacode.server.springelectronriftstatisticswebapp.repository.CookieRepository;
 import javacode.server.springelectronriftstatisticswebapp.repository.UserRepository;
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
@@ -17,17 +19,21 @@ import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
+import javax.swing.text.html.Option;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,6 +74,8 @@ public class UserController {
     HtmlFactory htmlFactory;
     @Autowired
     private EmailsSender emailsSender;
+    @Autowired
+    private CookieRepository cookieRepository;
 
 //    @GetMapping("/all")
 //    public List<User> list() {
@@ -102,6 +110,7 @@ public class UserController {
         String username = userData[0];
         String email = userData[1];
         String password = userData[2];
+        String publicIP = userData[3];
         Optional<User> user = userRepository.findByUsername(username);
         Optional<User> user2 = userRepository.findByEmail(email);
         if (user.isPresent()) {
@@ -111,7 +120,9 @@ public class UserController {
         } else {
             try {
                 User newUser = new User(username, password, email);
+                Cookie cookie = new Cookie(newUser.getId(), publicIP);
                 userRepository.save(newUser);
+                cookieRepository.save(cookie);
                 return new ResponseEntity<>(newUser.getId(), HttpStatus.CREATED);
             }catch (Exception e){
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -119,7 +130,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("users/actions/profileimgupdt/{uid}")
+    @PutMapping("users/actions/profileimgupdt/{uid}")
     public ResponseEntity<String> login(@PathVariable("uid") String uid, @RequestBody byte[] profileImg) {
         Optional<User> user = userRepository.findById(uid);
         if (user.isPresent()) {
@@ -137,8 +148,149 @@ public class UserController {
         if (user.isPresent()) {
             user.get().setVerified(true);
             userRepository.save(user.get());
-            String html = htmlFactory.getVerificationConfirm();
+            String html = htmlFactory.getVerificationConfirmWeb();
             return new ResponseEntity<>(html, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("users/actions/cookie/verification/{uid}@&@{ipAdress}")
+    public ResponseEntity<String> cookieVerify(@PathVariable("uid") String uid, @PathVariable("ipAdress") String ipAdress) {
+        Optional<Cookie> cookie = cookieRepository.findByuseridAndIp(uid, ipAdress);
+        if (cookie.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("users/actions/cookie/create/{uid}@&@{ipAdress}")
+    public ResponseEntity<String> cookieCreate(@PathVariable("uid") String uid, @PathVariable("ipAdress") String ipAdress) {
+        Optional<User> user = userRepository.findById(uid);
+        if (user.isPresent()) {
+            Optional<Cookie> cookie = cookieRepository.findByUserid(uid);
+            if (cookie.isPresent()) {
+                cookie.get().setIp(ipAdress);
+                cookieRepository.save(cookie.get());
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                Cookie cookie1 = new Cookie(user.get().getId(), ipAdress);
+                cookieRepository.save(cookie1);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("users/actions/change/correctpsw/{uid}@&@{psswd}")
+    public ResponseEntity<String> changePassword(@PathVariable("uid") String uid, @PathVariable("psswd") String psswd) {
+        Optional<User> user = userRepository.findById(uid);
+        if (user.isPresent()) {
+            if (user.get().getPassword().equals(psswd)) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("users/actions/delete/{uid}")
+    public ResponseEntity<String> delete(@PathVariable("uid") String uid) {
+        Optional<User> user = userRepository.findById(uid);
+        try {
+            userRepository.delete(user.get());
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        Optional<User> user2 = userRepository.findById(uid);
+        if (user2.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("users/actions/notexist/{uid}")
+    public ResponseEntity<String> exists(@PathVariable("uid") String uid) {
+        Optional<User> user = userRepository.findById(uid);
+        if (user.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    @PutMapping("users/actions/update/{uid}/{type}")
+    public ResponseEntity<String> update(@PathVariable("uid") String uid, @PathVariable("type") String type,@RequestBody String data) {
+        Optional<User> user = userRepository.findById(uid);
+        boolean changesMade = false;
+        if (user.isPresent()) {
+            String[] userData = data.split("@&@");
+            String username = null;
+            String email = null;
+            String psswd = null;
+            LocalDate birthdate = null;
+            switch (type) {
+                case "1" -> username = userData[0];
+                case "2" -> email = userData[0];
+                case "3" -> birthdate = LocalDate.parse(userData[0]);
+                case "4" -> {
+                    username = userData[0];
+                    email = userData[1];
+                }
+                case "5" -> {
+                    username = userData[0];
+                    birthdate = LocalDate.parse(userData[1]);
+                }
+                case "6" -> {
+                    email = userData[0];
+                    birthdate = LocalDate.parse(userData[1]);
+                }
+                case "7" -> {
+                    username = userData[0];
+                    email = userData[1];
+                    birthdate = LocalDate.parse(userData[2]);
+                }
+                case "8" -> {
+                    psswd = userData[0];
+                }
+            }
+            if (username != null) {
+                Optional<User> user2 = userRepository.findByUsername(username);
+                if (user2.isPresent()) {
+                    return new ResponseEntity<>("username is already in use", HttpStatus.CONFLICT);
+                }else {
+                    user.get().setUsername(username);
+                    changesMade = true;
+                }
+            }
+            if (email != null) {
+                Optional<User> user2 = userRepository.findByEmail(email);
+                if (user2.isPresent()) {
+                    return new ResponseEntity<>("Email is already in use", HttpStatus.CONFLICT);
+                }else {
+                    user.get().setEmail(email);
+                    changesMade = true;
+                }
+            }
+            if (birthdate != null) {
+                user.get().setAccountbirthday(birthdate);
+                changesMade = true;
+            }
+            if (psswd != null) {
+                user.get().setPassword(psswd);
+                changesMade = true;
+            }
+            if (changesMade) {
+                userRepository.save(user.get());
+                return new ResponseEntity<>(HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            }
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -220,6 +372,17 @@ public class UserController {
         }
     }
 
+    @GetMapping("/htmlRequests/passChange/{uid}")
+    public ResponseEntity<String> passChange(@PathVariable("uid") String uid) {
+        Optional<User> user = userRepository.findById(uid);
+        if (user.isPresent()) {
+            String html = htmlFactory.PassChange(user.get());
+            return new ResponseEntity<>(html, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/htmlRequests/summonerPage/{PUUID}/{region}/{logged}/{uid}")
     public ResponseEntity<String> summonerPage(@PathVariable("logged") String logged, @PathVariable("uid") String uid, @PathVariable("PUUID") String PUUID, @PathVariable("region") String region) {
         if (Boolean.parseBoolean(logged)) {
@@ -257,6 +420,17 @@ public class UserController {
         }else {
             String html = htmlFactory.itemsPage(false);
             return new ResponseEntity<>(html, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/htmlRequests/accSettings/{uid}")
+    public ResponseEntity<String> accSettings(@PathVariable("uid") String uid) {
+        Optional<User> user = userRepository.findById(uid);
+        if (user.isPresent()) {
+            String html = htmlFactory.accSettings(user.get());
+            return new ResponseEntity<>(html, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

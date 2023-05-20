@@ -45,7 +45,7 @@ public class FilesController {
 
     @GetMapping("css/style")
     public ResponseEntity<String> getDefaultStyle() {
-        try (FileReader reader = new FileReader("src/main/resources/static/css/styles.css");){
+        try (FileReader reader = new FileReader("src/main/resources/static/css/styles.css")){
             String data = getDataFromFile(reader);
             return new ResponseEntity<>(data, HttpStatus.OK);
         }catch (Exception e) {
@@ -56,7 +56,18 @@ public class FilesController {
 
     @GetMapping("css/loader")
     public ResponseEntity<String> getLoaderStyle() {
-        try (FileReader reader = new FileReader("src/main/resources/static/css/loader.css");){
+        try (FileReader reader = new FileReader("src/main/resources/static/css/loader.css")){
+            String data = getDataFromFile(reader);
+            return new ResponseEntity<>(data, HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("css/accSett")
+    public ResponseEntity<String> getAccSettStyle() {
+        try (FileReader reader = new FileReader("src/main/resources/static/css/AccountSettings.css")){
             String data = getDataFromFile(reader);
             return new ResponseEntity<>(data, HttpStatus.OK);
         }catch (Exception e) {
@@ -71,7 +82,7 @@ public class FilesController {
     public ResponseEntity<String> getUtilitiesJS() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("text/javascript"));
-        try (FileReader reader = new FileReader("src/main/resources/static/javascript/UtilitiesScripts.js");){
+        try (FileReader reader = new FileReader("src/main/resources/static/javascript/UtilitiesScripts.js")){
             String data = getDataFromFile(reader);
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         }catch (Exception e) {
@@ -85,7 +96,7 @@ public class FilesController {
     public ResponseEntity<String> getJqueryJS() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("text/javascript"));
-        try (FileReader reader = new FileReader("src/main/resources/static/javascript/jquery-3.6.4.min.js");){
+        try (FileReader reader = new FileReader("src/main/resources/static/javascript/jquery-3.6.4.min.js")){
             String data = getDataFromFile(reader);
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         }catch (Exception e) {
@@ -94,11 +105,11 @@ public class FilesController {
         }
     }
 
-    @GetMapping("js/auth")
-    public ResponseEntity<String> getAuthJS() {
+    @GetMapping("js/AccSett")
+    public ResponseEntity<String> getAccSettJS() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("text/javascript"));
-        try (FileReader reader = new FileReader("src/main/resources/static/javascript/auth-service.js");){
+        try (FileReader reader = new FileReader("src/main/resources/static/javascript/AccountSettings.js")){
             String data = getDataFromFile(reader);
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         }catch (Exception e) {
@@ -221,6 +232,22 @@ public class FilesController {
             Optional<User> userInfo = userRepository.findByUsername(username);
             if (userInfo.isPresent()) {
                 emailsSender.sendConfirmationEmail(userInfo.get());
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+            }
+
+        }catch (Exception e) {
+            return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("mail/passchange/{username}")
+    public ResponseEntity<Boolean> passChange(@PathVariable String username) {
+        try {
+            Optional<User> userInfo = userRepository.findByUsername(username);
+            if (userInfo.isPresent()) {
+                emailsSender.sendPassChangeEmail(userInfo.get());
                 return new ResponseEntity<>(true, HttpStatus.OK);
             }else {
                 return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);

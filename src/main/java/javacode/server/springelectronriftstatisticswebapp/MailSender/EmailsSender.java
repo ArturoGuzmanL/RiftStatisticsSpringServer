@@ -32,16 +32,26 @@ public class EmailsSender {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         helper.setSubject("Bienvenido a RiftStatistics");
         helper.setTo(user.getEmail());
-        String emailContent = getEmailContent(user);
+        String emailContent = getVerificationEmailContent(user);
         helper.setText(emailContent, true);
         javaMailSender.send(mimeMessage);
     }
 
-    String getEmailContent(User user) throws IOException, TemplateException {
+    String getVerificationEmailContent(User user) throws IOException, TemplateException {
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
         model.put("verificationlink", "https://riftstatistics.ddns.net/page/users/actions/verification/" + user.getId());
         configuration.getTemplate("RegistrationMail.ftl").process(model, stringWriter);
         return stringWriter.getBuffer().toString();
+    }
+
+    public void sendPassChangeEmail(User user) throws MessagingException, IOException, TemplateException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+        helper.setSubject("Cambiar contraseña de RiftStatistics");
+        helper.setTo(user.getEmail());
+        String emailContent = getVerificationEmailContent(user);
+        helper.setText(emailContent, true);
+        javaMailSender.send(mimeMessage);
     }
 }

@@ -12,4 +12,5 @@ public interface CookieRepository extends JpaRepository<Cookie, Long> {
 
     Optional<Cookie> findByUserid(@Param("userid") String userid);
 
+    Optional<Cookie> findByuseridAndIp(@Param("userid") String userid, @Param("ip") String ip);
 }

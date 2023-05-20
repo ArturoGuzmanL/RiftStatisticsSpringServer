@@ -22,12 +22,12 @@ import java.time.LocalDate;
 @EntityListeners(AuditingEntityListener.class)
 
 public class User implements Serializable {
-    public User (String ID, String username, String email, String password, LocalDate create_Date, String vinculatedlol, String lolregion, byte[] accountimage, boolean verified) {
+    public User (String ID, String username, String email, String password, LocalDate creationdate, String vinculatedlol, String lolregion, byte[] accountimage, boolean verified) {
         this.id = ID;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.create_Date = create_Date;
+        this.creationdate = creationdate;
         this.vinculatedlol = vinculatedlol;
         this.lolregion = lolregion;
         this.accountimage = accountimage;
@@ -39,7 +39,7 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.create_Date = LocalDate.now();
+        this.creationdate = LocalDate.now();
         this.verified = false;
     }
 
@@ -56,7 +56,7 @@ public class User implements Serializable {
     @Column(name = "password")
     private String password = null;
     @Column(name = "creationdate")
-    private LocalDate create_Date = null;
+    private LocalDate creationdate = null;
     @Column(name = "vinculatedlol")
     private String vinculatedlol = null;
     @Column(name = "lolregion")
@@ -66,6 +66,8 @@ public class User implements Serializable {
     private byte[] accountimage;
     @Column(name = "verified")
     private boolean verified;
+    @Column(name = "accountbirthday")
+    private LocalDate accountbirthday;
 
     // getters y setters
 
@@ -101,12 +103,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public LocalDate getCreate_Date () {
-        return create_Date;
+    public LocalDate getCreationdate () {
+        return creationdate;
     }
 
-    public void setCreate_Date (LocalDate create_Date) {
-        this.create_Date = create_Date;
+    public void setCreationdate (LocalDate creationdate) {
+        this.creationdate = creationdate;
     }
 
     public String getVinculatedlol () {
@@ -141,8 +143,16 @@ public class User implements Serializable {
         this.verified = verified;
     }
 
+    public LocalDate getAccountbirthday () {
+        return accountbirthday;
+    }
+
+    public void setAccountbirthday (LocalDate accountbirthday) {
+        this.accountbirthday = accountbirthday;
+    }
+
     public boolean noneNull() {
-        return id != null && username != null && password != null && email != null && create_Date != null && vinculatedlol != null && accountimage != null && lolregion != null && verified;
+        return id != null && username != null && password != null && email != null && creationdate != null && vinculatedlol != null && accountimage != null && lolregion != null && verified  && accountbirthday != null;
     }
 
     @Override
@@ -150,10 +160,11 @@ public class User implements Serializable {
         return "User{" +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", create_Date='" + create_Date + '\'' +
+                ", create_Date='" + creationdate + '\'' +
                 ", vinculatedLoL='" + vinculatedlol + '\'' +
                 ", LoLRegion='" + lolregion + '\'' +
                 ", AccountImage='" + accountimage + '\'' +
+                ", AccountBirthday='" + accountbirthday + '\'' +
                 '}';
     }
 
