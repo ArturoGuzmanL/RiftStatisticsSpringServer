@@ -50,8 +50,16 @@ public class EmailsSender {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         helper.setSubject("Cambiar contraseña de RiftStatistics");
         helper.setTo(user.getEmail());
-        String emailContent = getVerificationEmailContent(user);
+        String emailContent = getPassChangeEmailContent(user);
         helper.setText(emailContent, true);
         javaMailSender.send(mimeMessage);
+    }
+
+    String getPassChangeEmailContent(User user) throws IOException, TemplateException {
+        StringWriter stringWriter = new StringWriter();
+        Map<String, Object> model = new HashMap<>();
+        model.put("PassChangelink", "https://riftstatistics.ddns.net/page/users/actions/passchange/" + user.getId());
+        configuration.getTemplate("PassChangeMail.ftl").process(model, stringWriter);
+        return stringWriter.getBuffer().toString();
     }
 }

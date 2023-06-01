@@ -30,6 +30,8 @@ public class ItemStatsData {
             case "Attack Speed" -> iconType = "Attack_speed_icon";
             case "Ability Haste" -> iconType = "Cooldown_reduction_icon";
             case "Critical Strike Chance" -> iconType = "Critical_strike_chance_icon";
+            case "Critical Strike Damage" -> iconType = "Critical_strike_damage_icon";
+            case "Gold Per 10 Seconds" -> iconType = "Gold_icon";
             case "Heal and Shield Power" -> iconType = "Heal_and_shield_power_icon";
             case "Health" -> iconType = "Health_icon";
             case "Base Health Regen" -> iconType = "Health_regeneration_icon";

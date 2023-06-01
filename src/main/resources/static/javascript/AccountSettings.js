@@ -402,3 +402,21 @@ $('#changePasswdButton').off('click').on('click', function () {
   }
 });
 
+$('#forgotPass').off('click').on('click', function () {
+  let username = $('#username').text();
+  let xhr = new XMLHttpRequest();
+  xhr.open("GET", `https://riftstatistics.ddns.net/file/mail/passchange/${username}`, true);
+  xhr.send();
+  Swaldef.fire({
+    toast: true,
+    position: 'top',
+    width: '80%',
+    title: 'An email to change your password has been sent, please check your inbox',
+    icon: 'success',
+    color: '#FFFFFF',
+    background: 'rgba(11, 11, 35, 1)',
+    timer: 3000,
+    showConfirmButton: false,
+  });
+});
+

@@ -3,7 +3,6 @@ package javacode.server.springelectronriftstatisticswebapp.controller;
 
 import javacode.server.springelectronriftstatisticswebapp.HtmlFactory.HtmlFactory;
 import javacode.server.springelectronriftstatisticswebapp.MailSender.EmailsSender;
-import javacode.server.springelectronriftstatisticswebapp.SecretFile;
 import javacode.server.springelectronriftstatisticswebapp.model.Cookie;
 import javacode.server.springelectronriftstatisticswebapp.model.User;
 import javacode.server.springelectronriftstatisticswebapp.repository.CookieRepository;
@@ -11,15 +10,11 @@ import javacode.server.springelectronriftstatisticswebapp.repository.UserReposit
 import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
-import no.stelar7.api.r4j.basic.utils.SummonerCrawler;
-import no.stelar7.api.r4j.impl.R4J;
-import no.stelar7.api.r4j.impl.lol.raw.DDragonAPI;
 import no.stelar7.api.r4j.pojo.lol.summoner.Summoner;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -38,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 @RestController
@@ -59,8 +54,6 @@ public class UserController {
         regions.add(LeagueShard.TR1);
     }
 
-    final R4J r4J = new R4J(SecretFile.CREDS);
-    DDragonAPI api = r4J.getDDragonAPI();
     Supplier<FileSystemCacheProvider> fileCache= () -> new FileSystemCacheProvider();
 
     public UserController() {
@@ -88,7 +81,7 @@ public class UserController {
         return new ResponseEntity<>("pong", HttpStatus.OK);
     }
 
-    // ------------- Account actions  ------------- //
+    // -------------  Account actions  ------------- //
 
     @GetMapping("users/actions/login/{username}@&@{password}")
     public ResponseEntity<String> get(@PathVariable("username") String username, @PathVariable("password") String password) {
@@ -149,6 +142,17 @@ public class UserController {
             user.get().setVerified(true);
             userRepository.save(user.get());
             String html = htmlFactory.getVerificationConfirmWeb();
+            return new ResponseEntity<>(html, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("users/actions/passchange/{uid}")
+    public ResponseEntity<String> passChangeWeb(@PathVariable("uid") String uid) {
+        Optional<User> user = userRepository.findById(uid);
+        if (user.isPresent()) {
+            String html = htmlFactory.getPassChangeWeb(user.get().getId());
             return new ResponseEntity<>(html, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -322,7 +326,7 @@ public class UserController {
         }
     }
 
-    // ------------- Html petitions  ------------- //
+    // -------------  Html petitions  ------------- //
 
     @GetMapping("/htmlRequests/home/{logged}/{uid}")
     public ResponseEntity<String> login(@PathVariable("logged") String logged, @PathVariable("uid") String uid) {
@@ -434,60 +438,70 @@ public class UserController {
         }
     }
 
+    @GetMapping("/htmlRequests/loading")
+    public ResponseEntity<String> loading() {
+        String html = htmlFactory.loading();
+        return new ResponseEntity<>(html, HttpStatus.OK);
+    }
+
     // ------------- General actions  ------------- //
 
     @GetMapping("/browse/{username}")
     public String browse(@PathVariable("username") String username) {
+        boolean finished = false;
         StringBuilder formattedHtmlComplete = new StringBuilder();
         ArrayList<Summoner> summoners = new ArrayList<>();
         for (LeagueShard region : regions) {
-            Summoner sum = Summoner.byName(region, username);
-            if (sum != null) {
-                summoners.add(sum);
+            CompletableFuture.supplyAsync(() -> Summoner.byName(region, username)).thenAccept(summoners::add);
+        }
+        while (!finished) {
+            if (summoners.size() == regions.size()) {
+                finished = true;
             }
         }
+        for (Summoner summoner : summoners) {
+            if (summoner != null) {
+                String summonerImg = "https://riftstatistics.ddns.net/file/assets/summIcon/" + summoner.getProfileIconId() + ".png";
+                Image image = null;
+                try {
+                    image = ImageIO.read(new URL(summonerImg));
+                } catch (IOException e) {
+                    System.out.println("Error when loading summoner " + summoner.getName() + " with region " + summoner.getPlatform().getRealmValue().toUpperCase());
+                }
+                if (image == null) {
+                    summonerImg = "https://riftstatistics.ddns.net/file/assets/summIcon/29.png";
+                }
 
-        for (Summoner summoner: summoners) {
-            String summonerImg = "https://riftstatistics.ddns.net/file/assets/summIcon/" + summoner.getProfileIconId() + ".png";
-            Image image = null;
-            try {
-                image = ImageIO.read(new URL(summonerImg));
-            } catch (IOException e) {
-                System.out.println("Error when loading summoner " + summoner.getName() + " with region " + summoner.getPlatform().getRealmValue().toUpperCase());
+                String summonerName = summoner.getName();
+                String summonerRegion = summoner.getPlatform().getRealmValue().toUpperCase();
+
+                Map<String, String> values = new HashMap<>();
+                values.put("Img", summonerImg);
+                values.put("SummName", summonerName);
+                values.put("SummReg", summonerRegion);
+                values.put("summID", summoner.getPUUID());
+                StringSubstitutor sub = new StringSubstitutor(values);
+
+                String htmlFragment = "<li id=\"${summID}\" class=\"browserItem\">" +
+                        "<div href=\"\" class=\"browserLink\">" +
+                        "<div class=\"cardContainer\">" +
+                        "<div class=\"browserCard\">" +
+                        "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+                        "</div>" +
+                        "<div class=\"cardPhoto\">" +
+                        "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
+                        "</div>" +
+                        "</div>" +
+                        "<span class=\"browserName\">" +
+                        "<span class=\"browserSummName\">${SummName}</span>" +
+                        "<span id=\"summoner${summID}Region\"class=\"browserSummRegion\">${SummReg}</span>" +
+                        "</span>" +
+                        "</div>" +
+                        "</li>";
+
+                String formattedHtml = sub.replace(htmlFragment);
+                formattedHtmlComplete.append(formattedHtml);
             }
-            if (image == null) {
-                summonerImg = "https://riftstatistics.ddns.net/file/assets/summIcon/29.png";
-            }
-
-            String summonerName = summoner.getName();
-            String summonerRegion = summoner.getPlatform().getRealmValue().toUpperCase();
-
-            Map<String, String> values = new HashMap<>();
-            values.put("Img", summonerImg);
-            values.put("SummName", summonerName);
-            values.put("SummReg", summonerRegion);
-            values.put("summID", summoner.getPUUID());
-            StringSubstitutor sub = new StringSubstitutor(values);
-
-            String htmlFragment = "<li id=\"${summID}\" class=\"browserItem\">" +
-                    "<div href=\"\" class=\"browserLink\">" +
-                    "<div class=\"cardContainer\">" +
-                    "<div class=\"browserCard\">" +
-                    "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-                    "</div>" +
-                    "<div class=\"cardPhoto\">" +
-                    "<img src=\"${Img}\" class=\"cardBackground\" alt=\"${Img}\">" +
-                    "</div>" +
-                    "</div>" +
-                    "<span class=\"browserName\">" +
-                    "<span class=\"browserSummName\">${SummName}</span>" +
-                    "<span id=\"summoner${summID}Region\"class=\"browserSummRegion\">${SummReg}</span>" +
-                    "</span>" +
-                    "</div>" +
-                    "</li>";
-
-            String formattedHtml = sub.replace(htmlFragment);
-            formattedHtmlComplete.append(formattedHtml);
         }
         return formattedHtmlComplete.toString();
     }

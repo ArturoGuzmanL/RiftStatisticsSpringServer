@@ -10,7 +10,7 @@
     padding: initial;
 }
 
-h1, h3 {
+h1, h2, h3, p {
     margin: 0 !important;
 }
 
@@ -199,7 +199,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
 
 .accountButton {
     transition: all 0.3s ease 0s;
-    color: rgba(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1) !important;
     border-style: solid;
     border-color: rgba(0, 0, 0, 1);
     background-image: linear-gradient(to bottom, rgba(78, 78, 246, 0.95) 25%, rgba(55, 55, 113, 0.95) 100%);
@@ -209,6 +209,16 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     overflow: hidden;
     border-radius: 10px;
     outline: none;
+}
+
+.Signup-button p::-moz-selection { /* Code for Firefox */
+    color: red;
+    background: yellow;
+}
+
+.Signup-button p::selection {
+    color: red;
+    background: yellow;
 }
 
 .accountButton:hover {
@@ -441,6 +451,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     font-size: 15px;
 }
 
+#SignPassShow,
 #LogPassShow {
     margin: 0.74rem 0 0 0;
     font-size: 15px;
@@ -453,9 +464,10 @@ body.filtered .page > div:not(.popupBrowserWindow) {
 
 #SignPassShow-activeShow,
 #LogPassShow-activeShow {
-    visibility: hidden;
+    visibility: visible;
 }
 
+#SignPassShow:hover,
 #LogPassShow:hover {
     background: rgba(0, 0, 0, 0.3);
     fill: #C0C2CB;
@@ -568,6 +580,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     margin: 1rem 0;
     padding: 0.4rem 0.8rem 0.7rem 0.8rem;
     border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    gap: 0.75rem;
 }
 
 .sidebarList {
@@ -588,12 +601,14 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     transform: translateX(-250px);
     opacity: 0;
     transition: opacity 0.25s ease 0s, transform 0.5s ease;
+    color: white !important;
 }
 
 .sidebar.active p {
     transform: translateX(0px);
     transition: opacity 0.75s ease 0s, transform 0.5s ease;
     opacity: 1;
+    color: white !important;
 }
 
 .unloggedPhoto,
@@ -651,6 +666,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     opacity: 0;
     transform: translateX(-350px);
     transition: all 0s ease 0s;
+    color: white !important;
 }
 
 .sidebar.active .sidebar-nav-item {
@@ -756,6 +772,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     justify-content: center;
     align-items: center;
     transition: all 0.5s ease 0s;
+    color: white !important;
 }
 
 .popupBrowserWindow.active {
@@ -775,7 +792,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     border-radius: 10px;
     border-style: solid;
     background-color: #22252b;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     overflow: hidden;
     outline: none;
     transition: all 0.3s ease 0s;
@@ -794,6 +811,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     justify-content: space-between;
     align-items: center;
     margin-top: -5rem;
+    color: white !important;
 }
 
 .popupSearchLabel input {
@@ -817,7 +835,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     width: 500px;
     border: none;
     background-color: transparent;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     overflow: hidden;
     outline: none;
 }
@@ -869,6 +887,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     justify-content: space-evenly;
     align-items: flex-start;
     overflow-y: visible;
+    color: white !important;
 }
 
 .popupBrowserContent.loader {
@@ -1019,7 +1038,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
 .browserSummName {
     position: relative;
     font-size: 1rem;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     text-align: center;
     width: 100%;
     height: 20%;
@@ -1029,7 +1048,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     position: relative;
     left: 5%;
     font-size: 0.8rem;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     text-align: center;
     max-width: 3rem;
     width: 100%;
@@ -1799,6 +1818,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     text-align: center;
 }
 
+
 .levelBorder{
     position: absolute;
     background-color: #0a0c23;
@@ -1837,7 +1857,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     display: flex;
     align-items: center;
     justify-items: center;
-    gap: 1px;
+    gap: 0.35rem;
     margin-left: 1rem;
 }
 
@@ -2050,6 +2070,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
+    top: 0.5rem;
     right: 0.75rem;
     gap: 1rem;
     height: fit-content;
@@ -2073,6 +2094,15 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     transition: all 0.5s ease 0s;
 }
 
+.statNumbers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: fit-content;
+}
+
 @media (max-width: 1300px) {
     .historyGameStatNumbers {
         margin-left: 1.5rem;
@@ -2085,6 +2115,10 @@ body.filtered .page > div:not(.popupBrowserWindow) {
 
     .historyGameStatNumbers h2 {
         font-size: 0.65rem;
+    }
+
+    .statNumbers h1, h2{
+        font-size: 0.9rem;
     }
 }
 
@@ -2118,7 +2152,7 @@ body.filtered .page > div:not(.popupBrowserWindow) {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    z-index: 10001;
+    z-index: 100000000;
 }
 
 .mailLink {

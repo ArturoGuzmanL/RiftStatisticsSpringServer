@@ -118,6 +118,19 @@ public class FilesController {
         }
     }
 
+    @GetMapping("js/PassPage")
+    public ResponseEntity<String> getPassPageJS() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.valueOf("text/javascript"));
+        try (FileReader reader = new FileReader("src/main/resources/static/javascript/PassPage.js")){
+            String data = getDataFromFile(reader);
+            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     // ------------- COOKIE ------------- //
 
     @GetMapping("cookie/request/{id}")
@@ -208,6 +221,9 @@ public class FilesController {
     public ResponseEntity<byte[]> getItemIcon(@PathVariable String id) {
         try {
             File file = new File("src/main/resources/assets/itemIcons/" + id);
+            if (!file.exists()) {
+                file = new File("src/main/resources/assets/itemIcons/29.png");
+            }
             return getImageEntity(file);
         }catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

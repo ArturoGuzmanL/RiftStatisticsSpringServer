@@ -105,6 +105,21 @@ body{
   transition: 0.3s;
 }
 
+.form_password {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #FFFFFF;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+  font-size: 15px;
+  gap: 1rem;
+}
+
+.logPassShow {
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
 .cancelButton {
   background: #6c757d;
   border-color: #6c757d;

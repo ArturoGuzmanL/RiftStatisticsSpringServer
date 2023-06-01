@@ -70,7 +70,7 @@ public class SummonerData implements Comparable<SummonerData> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChampionData that = (ChampionData) o;
-        return name.equals(that.name);
+        return this.name.equals(that.name);
     }
 
     @Override

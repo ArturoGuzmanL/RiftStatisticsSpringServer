@@ -91,7 +91,7 @@ $('#show-login').off('click').on('click', function(event) {
   if (!$(".popupSign").hasClass("active")) {
     if (logPassField.attr("type") === "text") {
       logPassField.attr("type", "password");
-      line.css("visibility", "hidden");
+      line.css("visibility", "visible");
     }
     $(".popup").toggleClass("active");
     logUsername.val("");
@@ -108,7 +108,7 @@ $('#show-signup').off('click').on('click', function(event) {
   if (!$(".popup").hasClass("active")) {
     if (signPassField.attr("type") === "text") {
       signPassField.attr("type", "password");
-      lineSign.css("visibility", "hidden");
+      lineSign.css("visibility", "visible");
     }
     $(".popupSign").toggleClass("active");
     $("#sigUsername").val("");
@@ -122,7 +122,7 @@ $('#close-btn-log').off('click').on('click', function(event) {
   let line = $('#LogPassShow-activeShow');
   $('.popup').removeClass('active');
   logPassField.attr('type', 'password');
-  line.css('visibility', 'hidden');
+  line.css('visibility', 'visible');
 });
 
 $('#close-btn-sign').off('click').on('click', function(event) {
@@ -130,7 +130,7 @@ $('#close-btn-sign').off('click').on('click', function(event) {
   let signPassField = $("#sigPassword");
   $(".popupSign").removeClass("active");
   signPassField.attr("type", "password");
-  lineSign.css("visibility", "hidden");
+  lineSign.css("visibility", "visible");
 });
 
 $('#logPassShow').off('click').on('click', function(event) {
@@ -138,10 +138,10 @@ $('#logPassShow').off('click').on('click', function(event) {
   let line = $('#LogPassShow-activeShow');
   if (logPassField.attr('type') === 'password') {
     logPassField.attr('type', 'text');
-    line.css('visibility', 'visible');
+    line.css('visibility', 'hidden');
   } else {
     logPassField.attr('type', 'password');
-    line.css('visibility', 'hidden');
+    line.css('visibility', 'visible');
   }
 });
 
@@ -150,10 +150,10 @@ $('#signPassShow').off('click').on('click', function(event) {
   let lineSign = $("#SignPassShow-activeShow");
   if (signPassField.attr("type") === "password") {
     signPassField.attr("type", "text");
-    lineSign.css("visibility", "visible");
+    lineSign.css("visibility", "hidden");
   } else {
     signPassField.attr("type", "password");
-    lineSign.css("visibility", "hidden");
+    lineSign.css("visibility", "visible");
   }
 });
 
@@ -230,6 +230,7 @@ $('#closeBrowserBtn').off('click').on('click', function(event) {
 $('#homePageButton').off('click').on('click', function(event) {
   ipcRenderer.send("is-logged");
   ipcRenderer.on("is-logged-reply", (event, reply) => {
+    console.log(reply)
     if (reply) {
       ipcRenderer.send("get-uid");
       ipcRenderer.on("get-uid-reply", (event, uid) => {
@@ -305,7 +306,7 @@ $('#recentlyPlayedContent').off('click', 'div.recentlyPlayedSummoner').on('click
   getSummoner.call(this, false);
 });
 
-$('.userLolAccount').off('click').on('click', function() {
+$('.lolAccountButton').off('click').on('click', function() {
   getSummoner.call(this, false);
 });
 
@@ -656,7 +657,7 @@ $('#Signup-button').off('click').on('click', async function (event) {
         let signPassField = $("#sigPassword");
         $(".popupSign").removeClass("active");
         signPassField.attr("type", "password");
-        lineSign.css("visibility", "hidden");
+        lineSign.css("visibility", "visible");
         Toast.fire({
           tast: false,
           showClass: {
@@ -679,7 +680,7 @@ $('#Signup-button').off('click').on('click', async function (event) {
         let lineSign = $("#SignPassShow-activeShow");
         let signPassField = $("#sigPassword");
         signPassField.attr("type", "password");
-        lineSign.css("visibility", "hidden");
+        lineSign.css("visibility", "visible");
         signPassField.val("");
         const Toast = Swaldef.mixin({
           toast: true,

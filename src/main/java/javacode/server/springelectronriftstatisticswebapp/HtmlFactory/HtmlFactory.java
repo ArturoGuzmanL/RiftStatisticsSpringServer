@@ -17,6 +17,7 @@ import no.stelar7.api.r4j.basic.cache.impl.FileSystemCacheProvider;
 import no.stelar7.api.r4j.basic.calling.DataCall;
 import no.stelar7.api.r4j.basic.constants.api.regions.LeagueShard;
 import no.stelar7.api.r4j.basic.constants.types.lol.GameQueueType;
+import no.stelar7.api.r4j.basic.constants.types.lol.LaneType;
 import no.stelar7.api.r4j.basic.constants.types.lol.RoleType;
 import no.stelar7.api.r4j.impl.R4J;
 import no.stelar7.api.r4j.impl.lol.builders.matchv5.match.MatchBuilder;
@@ -59,7 +60,7 @@ public class HtmlFactory {
     Configuration cfg;
     final R4J r4J = new R4J(SecretFile.CREDS);
     DDragonAPI api = r4J.getDDragonAPI();
-    Supplier<FileSystemCacheProvider> fileCache= () -> new FileSystemCacheProvider();
+    Supplier<FileSystemCacheProvider> fileCache = FileSystemCacheProvider::new;
     private static HtmlFactory instance;
 
     private HtmlFactory() throws IOException {
@@ -369,14 +370,13 @@ public class HtmlFactory {
                                 md.setCsMin(csMin + " CS/min");
                                 md.setCsTotal(p.getTotalMinionsKilled() + p.getNeutralMinionsKilled() + " CS");
 
-                                RoleType rt = p.getRole();
-                                if (! gametype.equals("ARAM")) {
-                                    switch (rt) {
-                                        case CARRY -> md.setMatchRole("ADC");
-                                        case SUPPORT -> md.setMatchRole("SUPPORT");
-                                        case SOLO -> md.setMatchRole("TOP");
-                                        case NONE -> md.setMatchRole("JUNGLE");
-                                        case DUO -> md.setMatchRole("MID");
+//                                RoleType rt = p.getRole();
+                            String lt = p.getChampionSelectLane().getCodes()[0];
+                                if (!gametype.equals("ARAM")) {
+                                    switch (lt) {
+                                        case "BOT" -> md.setMatchRole("ADC");
+                                        case "UTILITY" -> md.setMatchRole("SUPPORT");
+                                        default -> md.setMatchRole(lt);
                                     }
                                 } else {
                                     md.setMatchRole("");
@@ -677,10 +677,10 @@ public class HtmlFactory {
             ArrayList<String> itemListWardsIDs = new ArrayList<>(List.of("3330", "3340", "3363", "3364"));
             ArrayList<String> itemListConsumablesIDs = new ArrayList<>(List.of("3513", "2003", "2010", "2031", "2033", "2052", "2055", "2138", "2139", "2140", "2403", "2420", "2421", "3400"));
             ArrayList<String> itemListBasicItemsIDs = new ArrayList<>(List.of("1004", "1006", "1018", "1026", "1027", "1028", "1029", "1033", "1036", "1037", "1038", "1042", "1052", "1058", "3057"));
-            ArrayList<String> itemListEpicItemsIDs = new ArrayList<>(List.of("1011", "1031", "1043", "1053", "1057", "2015", "3024", "3035", "3044", "3051", "3066", "3067", "3076", "3077", "3082", "3086", "3105", "3108", "3113", "3114", "3123", "3133", "3134", "3140", "3145", "3155", "3191", "3211", "3801", "3802", "3803", "3851", "3855", "3859", "3863", "3916", "4630", "4632", "4635", "4638", "4642", "6029", "6660", "6670", "6677"));
-            ArrayList<String> itemListLegendaryItemsIDs = new ArrayList<>(List.of("3003", "3004", "3011", "3026", "3031", "3033", "3036", "3040", "3041", "3042", "3046", "3050", "3053", "3065", "3068", "3071", "3072", "3074", "3075", "3083", "3085", "3089", "3091", "3094", "3095", "3100", "3102", "3107", "3109", "3110", "3115", "3116", "3119", "3121", "3124", "3135", "3139", "3142", "3143", "3153", "3156", "3157", "3161", "3165", "3179", "3181", "3193", "3222", "3504", "3508", "3742", "3748", "3814", "3853", "3857", "3860", "3864", "4401", "4628", "4629", "4637", "4643", "4645", "6035", "6333", "6609", "6616", "6664", "6675", "6676", "6694", "6695", "6696", "8001", "8020"));
-            ArrayList<String> itemListMythicItemsIDs = new ArrayList<>(List.of("2065", "3001", "3078", "3084", "3152", "3190", "4005", "4633", "4636", "4644", "6617", "6630", "6631", "6632", "6653", "6655", "6656", "6657", "6662", "6665", "6667", "6671", "6672", "6673", "6691", "6692", "6693"));
-            ArrayList<String> itemListOrnnItemsIDs = new ArrayList<>(List.of("7005", "7006", "7007", "7008", "7009", "7010", "7011", "7012", "7013", "7014", "7015", "7016", "7017", "7018", "7019", "7020", "7021", "7022", "7023", "7024", "7025", "7026", "7027", "7028", "7002", "7001", "7000"));
+            ArrayList<String> itemListEpicItemsIDs = new ArrayList<>(List.of("1011", "1031", "1043", "1053", "1057", "2015", "3024", "3035", "3044", "3051", "3066", "3067", "3076", "3023", "3077", "3012", "3082", "3086", "3105", "3108", "3113", "3114", "3123", "3133", "3134", "3140", "3145", "3155", "3191", "3211", "3801", "3802", "3803", "3851", "3855", "3859", "3863", "3916", "4630", "4632", "4635", "4638", "4642", "6029", "6660", "6670", "6677"));
+            ArrayList<String> itemListLegendaryItemsIDs = new ArrayList<>(List.of("3003", "3004", "3011", "3026", "3033", "3036", "3040", "3041", "6673", "3042", "4005", "3046", "3050", "3053", "3087", "3065", "3068", "3071", "3072", "3074", "3075", "3083", "3085", "3089", "3091", "6672", "3094", "3095", "3100", "3102", "3107", "3109", "3110", "3115", "3116", "3119", "3121", "3135", "3139", "3143", "3153", "3156", "3157", "3161", "3165", "3179", "3181", "3193", "3222", "3504", "3508", "3742", "3748", "3814", "3853", "3857", "3860", "3864", "4401", "4628", "4629", "4637", "4643", "4645", "6035", "6333", "6609", "6616", "6664", "6676", "6694", "6695", "6696", "8001", "8020", "6693"));
+            ArrayList<String> itemListMythicItemsIDs = new ArrayList<>(List.of("2065", "3124" ,"3001", "3078", "3084", "3152", "3190", "3031", "4633", "4636", "4644", "6617", "6630", "6631", "6675", "6632", "6653", "6655", "6656", "6657", "6662", "3142", "6665", "6667", "6671", "6691", "6692", "6620"));
+            ArrayList<String> itemListOrnnItemsIDs = new ArrayList<>(List.of("7005", "7030" ,"7006", "7031", "7009", "7010", "7011", "7012", "7013", "7014", "7015", "7016", "7017", "7018", "7019", "7032", "7020", "7021", "7023", "7024", "7025", "7026", "7029", "7027", "7028", "7002", "7001", "7033"));
             ArrayList<String> itemListChampionItemsIDs = new ArrayList<>(List.of("3600", "3901", "3902", "3903"));
 
             ArrayList<SectionData> sections = new ArrayList<>();
@@ -813,8 +813,38 @@ public class HtmlFactory {
         return null;
     }
 
+    public String getPassChangeWeb (String id) {
+        try {
+            String html;
+            Template template = cfg.getTemplate("passwordChangeWeb.ftl");
+            Map<String, Object> data = new HashMap<>();
+            StringWriter writer = new StringWriter();
+            data.put("userID", id);
+            template.process(data, writer);
+            html = writer.toString();
+            return html;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String loading () {
+        try {
+            String html;
+            Template template = cfg.getTemplate("loader.ftl");
+            Map<String, Object> data = new HashMap<>();
+            StringWriter writer = new StringWriter();
+            template.process(data, writer);
+            html = writer.toString();
+            return html;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Configuration getConfiguration() {
         return cfg;
     }
-
 }
