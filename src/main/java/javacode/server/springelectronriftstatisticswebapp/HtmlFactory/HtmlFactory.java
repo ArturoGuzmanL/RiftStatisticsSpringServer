@@ -77,7 +77,7 @@ public class HtmlFactory {
         return instance;
     }
 
-    public String  loginPageAction (boolean logged, boolean initialization, User ... args) {
+    public String  loginPageAction (boolean logged, User ... args) {
         if (logged) {
             try {
                 User user = args[0];
@@ -93,11 +93,8 @@ public class HtmlFactory {
                 }
                 img += base64Img;
 
-                if (initialization) {
-                    template = cfg.getTemplate("cleanLoggedIndex.ftl");
-                }else {
-                    template = cfg.getTemplate("loggedIndex.ftl");
-                }
+                template = cfg.getTemplate("loggedIndex.ftl");
+
                 Map<String, Object> data = new HashMap<>();
                 data.put("Username", user.getUsername());
                 data.put("UsernamePhoto", img);
@@ -122,11 +119,8 @@ public class HtmlFactory {
         }else {
             try {
                 Template template;
-                if (initialization) {
-                    template = cfg.getTemplate("cleanUnloggedIndex.ftl");
-                }else {
-                    template = cfg.getTemplate("unloggedIndex.ftl");
-                }
+                template = cfg.getTemplate("unloggedIndex.ftl");
+
                 StringWriter out = new StringWriter();
                 template.process(null, out);
                 String html = out.toString();
@@ -371,7 +365,7 @@ public class HtmlFactory {
                                 md.setCsTotal(p.getTotalMinionsKilled() + p.getNeutralMinionsKilled() + " CS");
 
 //                                RoleType rt = p.getRole();
-                            String lt = p.getChampionSelectLane().getCodes()[0];
+                                String lt = p.getChampionSelectLane().getCodes()[0];
                                 if (!gametype.equals("ARAM")) {
                                     switch (lt) {
                                         case "BOT" -> md.setMatchRole("ADC");

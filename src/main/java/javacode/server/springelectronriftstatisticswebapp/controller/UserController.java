@@ -29,10 +29,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 @RestController
@@ -54,10 +56,8 @@ public class UserController {
         regions.add(LeagueShard.TR1);
     }
 
-    Supplier<FileSystemCacheProvider> fileCache= () -> new FileSystemCacheProvider();
-
     public UserController() {
-        DataCall.setCacheProvider(fileCache.get());
+        DataCall.setCacheProvider(new FileSystemCacheProvider());
     }
 
 
@@ -333,29 +333,13 @@ public class UserController {
         if (Boolean.parseBoolean(logged)) {
             Optional<User> user = userRepository.findById(uid);
             if (user.isPresent()) {
-                String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), false , user.get());
+                String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), user.get());
                 return new ResponseEntity<>(html, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }else {
-            String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), false);
-            return new ResponseEntity<>(html, HttpStatus.OK);
-        }
-    }
-
-    @GetMapping("/htmlRequests/home/initialization/{logged}/{uid}")
-    public ResponseEntity<String> loginInitialization(@PathVariable("logged") String logged, @PathVariable("uid") String uid) {
-        if (Boolean.parseBoolean(logged)) {
-            Optional<User> user = userRepository.findById(uid);
-            if (user.isPresent()) {
-                String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), true , user.get());
-                return new ResponseEntity<>(html, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        }else {
-            String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged), true);
+            String html = htmlFactory.loginPageAction(Boolean.parseBoolean(logged));
             return new ResponseEntity<>(html, HttpStatus.OK);
         }
     }
@@ -447,18 +431,10 @@ public class UserController {
     // ------------- General actions  ------------- //
 
     @GetMapping("/browse/{username}")
-    public String browse(@PathVariable("username") String username) {
-        boolean finished = false;
+    public String browse(@PathVariable("username") String username) throws InterruptedException {
         StringBuilder formattedHtmlComplete = new StringBuilder();
-        ArrayList<Summoner> summoners = new ArrayList<>();
-        for (LeagueShard region : regions) {
-            CompletableFuture.supplyAsync(() -> Summoner.byName(region, username)).thenAccept(summoners::add);
-        }
-        while (!finished) {
-            if (summoners.size() == regions.size()) {
-                finished = true;
-            }
-        }
+        ArrayList<Summoner> summoners = new ArrayList<>(Arrays.asList(Summoner.byName(LeagueShard.EUW1, username), Summoner.byName(LeagueShard.NA1, username), Summoner.byName(LeagueShard.KR, username), Summoner.byName(LeagueShard.BR1, username), Summoner.byName(LeagueShard.EUN1, username), Summoner.byName(LeagueShard.LA1, username), Summoner.byName(LeagueShard.LA2, username), Summoner.byName(LeagueShard.OC1, username), Summoner.byName(LeagueShard.RU, username), Summoner.byName(LeagueShard.TR1, username), Summoner.byName(LeagueShard.JP1, username)));
+
         for (Summoner summoner : summoners) {
             if (summoner != null) {
                 String summonerImg = "https://riftstatistics.ddns.net/file/assets/summIcon/" + summoner.getProfileIconId() + ".png";
@@ -505,4 +481,5 @@ public class UserController {
         }
         return formattedHtmlComplete.toString();
     }
+
 }

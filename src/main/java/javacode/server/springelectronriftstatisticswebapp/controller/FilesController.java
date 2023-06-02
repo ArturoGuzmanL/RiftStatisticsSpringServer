@@ -33,8 +33,6 @@ import java.util.Optional;
 public class FilesController {
 
     @Autowired
-    private ApplicationContext context;
-    @Autowired
     private EmailsSender emailsSender;
     @Autowired
     private UserRepository userRepository;
